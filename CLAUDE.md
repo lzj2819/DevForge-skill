@@ -84,8 +84,8 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 | 2 | `devforge-architecture-design/` | `[APPROVE]` after PRD | Design |
 | 3a | `devforge-architecture-validation/` | `[APPROVE]` after architecture | Verify |
 | 3b | `devforge-design-review/` | `[DESIGN_REVIEW]` after validation | Verify |
-| 4 | `devforge-project-scaffolding/` | `[APPROVE]` after validation/review | Implement |
-| 5 | `devforge-module-design/` | `[MODULE {id}]` / `[MODULE_BATCH {ids}]` | Design |
+| 4 | `devforge-project-scaffolding/` | `[APPROVE]` after validation/review | Implement (infrastructure) |
+| 5 | `devforge-module-design/` | `[MODULE {id}]` / `[MODULE_BATCH {ids}]` | Design + Implement (code skeleton) |
 | 6 | `devforge-test-execution/` | `[TEST]` | Verify |
 | 7 | `devforge-iteration-planning/` | New requirements after scaffolding | Evolve |
 | 8 | `devforge-visualization/` | `[VISUALIZE]` | — |

@@ -188,8 +188,8 @@ cd $env:USERPROFILE\.claude\devforge-skills; git pull
 | 2 | `devforge-architecture-design` | PRD 已批准 `[APPROVE]` | `ARCHITECTURE.md` + `INTERFACE_CONTRACT.md` + `architecture.xml` + `schema.sql` + `openapi.yaml` |
 | 3 | `devforge-architecture-validation` | 架构已批准 | `VALIDATION_REPORT.md` + `VALIDATION_DELTA.md` + `health-check.sh` |
 | 4 | `devforge-design-review` | 架构已批准（可选） | `DESIGN_REVIEW.md`（问题清单，非 PASS/FAIL） |
-| 5 | `devforge-project-scaffolding` | 架构/验证已批准 | `PROJECT_SCAFFOLD/`（完整工程目录 + CI/CD + 测试夹具 + `.env.template`） |
-| 6 | `devforge-module-design` | 输入 `[MODULE {module_id}]` | `module-architecture.xml` + `component-spec.xml` + 模块级 PRD |
+| 5 | `devforge-project-scaffolding` | 架构/验证已批准 | `PROJECT_SCAFFOLD/`（工程目录 + CI/CD + 部署 + 测试框架 + `.env.template`） |
+| 6 | `devforge-module-design` | 输入 `[MODULE {module_id}]` | `module-architecture.xml` + `component-spec.xml` + 模块级 PRD + 精确代码骨架 |
 | 7 | `devforge-iteration-planning` | 初始脚手架完成后有新需求 | `ITERATION_PRD.md` + `ITERATION_PLAN.md` + 增量架构更新 |
 | 8 | `devforge-visualization` | 输入 `[VISUALIZE]` | Mermaid 架构图（系统上下文、模块交互、数据流、ER 图） |
 | 9 | `devforge-ops-ready` | 输入 `[OPS]` | Terraform + K8s manifests + Prometheus/Grafana + 蓝绿/金丝雀发布 + 运维手册 |
@@ -204,7 +204,8 @@ Design（设计）
   └── 阶段 6: 模块细化 —— 组件分解与接口契约
 
 Implement（实现）
-  └── 阶段 5: 项目脚手架 —— XML 驱动代码生成 + CI/CD + 透明测试
+  ├── 阶段 5: 项目脚手架 —— 基础设施 + CI/CD + 测试框架 + 部署拓扑
+  └── 阶段 6: 模块细化 —— 组件分解 + 精确代码骨架生成
 
 Verify（验证）
   ├── 阶段 3: 架构验证 —— LLM 沙盘模拟 + 一致性审计
