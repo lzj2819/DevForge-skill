@@ -486,7 +486,7 @@ skill/
 ├── tools/
 │   ├── error-tracing.md               # Error format spec with TraceID + DecisionID linkage
 │   ├── artifact-manager.md            # CRUD-Append + conflict detection rules
-│   └── intervention-checkpoint.md     # Human-in-the-loop commands (PAUSE/ROLLBACK/EXPLAIN/EDIT/SKIP/INJECT)
+│   └── intervention-checkpoint.md     # Human-in-the-loop commands (PAUSE/ROLLBACK/EXPLAIN/EDIT/SKIP/INJECT + v1.3: FIX/APPLY/FORCE_APPROVE/SKIP_REVIEW/DESIGN_REVIEW/VALIDATE/TEST)
 ├── scripts/
 │   ├── architecture-ci.sh             # CI health check script (6 checks incl. security)
 │   ├── xml-sync.py                    # XML sync and validation script
@@ -790,7 +790,7 @@ description: Internal utility skill used by other DevForges to compress session 
 - **Technology Stack Validation**: Active search before recommending tools; never recommend blacklisted libraries (VM2, known RCE) without explicit approval.
 - **Error Tracing**: All errors MUST follow `tools/error-tracing.md` format (TraceID, DecisionID linkage, fix suggestions).
 - **Artifact Management**: All artifacts MUST follow `tools/artifact-manager.md` CRUD-Append rules (read existing → compute diff → update delta → preserve manual edits).
-- **Intervention Checkpoint**: Human gate MUST support `[PAUSE]`, `[ROLLBACK]`, `[EXPLAIN]`, `[EDIT]`, `[SKIP]`, `[INJECT]` per `tools/intervention-checkpoint.md`.
+- **Intervention Checkpoint**: Human gate MUST support `[PAUSE]`, `[ROLLBACK]`, `[EXPLAIN]`, `[EDIT]`, `[SKIP]`, `[INJECT]`, `[FIX]`, `[APPLY]`, `[FORCE_APPROVE]`, `[SKIP_REVIEW]`, `[DESIGN_REVIEW]`, `[VALIDATE]`, `[TEST]` per `tools/intervention-checkpoint.md`.
 - **Security Audit**: Code generation MUST trigger `devforge-security-audit` scan; Critical issues MUST be fixed before proceeding.
 - **Search Integration**: Tool recommendations MUST follow `references/search-integration.md` (WebSearch for CVE, deprecation, benchmarks; cache 24h).
 

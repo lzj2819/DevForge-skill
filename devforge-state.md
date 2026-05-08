@@ -23,6 +23,7 @@ description: Template for the file-based state used by the DevForge chain
 - [YYYY-MM-DD HH:MM] devforge-design-review: [key decision summary]
 - [YYYY-MM-DD HH:MM] devforge-project-scaffolding: [key decision summary]
 - [YYYY-MM-DD HH:MM] devforge-module-design: [module_id] - [key decision summary]
+- [YYYY-MM-DD HH:MM] devforge-test-execution: [test summary + coverage]
 - [YYYY-MM-DD HH:MM] devforge-iteration-planning: [iteration scope summary]
 
 ## 3. DecisionDigest (Append-Only, Last 20 Entries)
@@ -34,7 +35,7 @@ description: Template for the file-based state used by the DevForge chain
 ## 4. Current State (Overwritten)
 > Reflects the latest progress.
 
-- phase: [requirement_analysis_completed | architecture_design_completed | architecture_validated | design_review_completed | scaffolding_completed | module_design_completed | iteration_planning_completed | visualization_completed | ops_ready_completed | evolution_completed]
+- phase: [requirement_analysis_completed | architecture_design_completed | architecture_validated | design_review_completed | scaffolding_completed | module_design_completed | test_execution_completed | iteration_planning_completed | visualization_completed | ops_ready_completed | evolution_completed]
 - DIVE:
   - Design: [pending | in_progress | completed]
   - Implement: [pending | in_progress | completed]
@@ -45,7 +46,7 @@ description: Template for the file-based state used by the DevForge chain
   - `refactor`: Run devforge-architecture-design for architectural changes
   - `module`: Run devforge-module-design for the next un-designed module
   - `none`: No pending action; project is in steady state
-- Next skill: [devforge-architecture-design | devforge-architecture-validation | devforge-design-review | devforge-project-scaffolding | devforge-module-design | devforge-iteration-planning | devforge-visualization | devforge-ops-ready | devforge-debug-assistant]
+- Next skill: [devforge-architecture-design | devforge-architecture-validation | devforge-design-review | devforge-project-scaffolding | devforge-module-design | devforge-test-execution | devforge-iteration-planning | devforge-visualization | devforge-ops-ready | devforge-debug-assistant]
 
 ## 5. Module Registry (Updated by devforge-module-design and devforge-iteration-planning)
 > Tracks the status of every module in the system.
@@ -120,8 +121,11 @@ iteration_history:
 | Database Schema | skill/artifacts/schema.sql | 2026-04-24 | DDL from DataModel |
 | OpenAPI Spec | skill/artifacts/openapi.yaml | 2026-04-24 | REST API contracts |
 | ERD | skill/artifacts/ERD.md | 2026-04-24 | Entity relationship diagram |
+| Test Report | docs/architecture/validation/TEST_REPORT.md | 2026-04-24 | Unit/integration/e2e results + coverage |
+| Test Coverage Gap | docs/architecture/validation/TEST_COVERAGE_GAP.md | 2026-04-24 | Missing test coverage list |
 | Debug Report | skill/artifacts/DEBUG_REPORT.md | 2026-04-24 | Bug diagnosis result |
 | Refactor Report | skill/artifacts/REFACTOR_REPORT.md | 2026-04-24 | Code health scan result |
+| Architecture Index | docs/architecture/INDEX.md | 2026-04-24 | Document registry + module table |
 | System Prompt | references/system-prompt-template.md | 2026-04-29 | Global role definition + VCMF constraints |
 | Context Protocol | references/context-management-protocol.md | 2026-04-29 | Layered summary + artifact loading rules |
 | Validation Scripts Manifest | references/validation-scripts-manifest.md | 2026-04-29 | Script capability mapping + known gaps |
@@ -156,7 +160,7 @@ ErrorLog:
 ```yaml
 InterventionLog:
   - timestamp: "2026-04-29T11:00:00Z"
-    type: "ROLLBACK"         # [PAUSE | ROLLBACK | EXPLAIN | EDIT | SKIP | INJECT]
+    type: "ROLLBACK"         # [PAUSE | ROLLBACK | EXPLAIN | EDIT | SKIP | INJECT | FIX | APPLY | FORCE_APPROVE | VALIDATE | TEST]
     stepId: "phase3-step5"
     reason: "架构设计走偏，需重新评估单体 vs 微服务"
     outcome: "重新评估后选择单体架构"
