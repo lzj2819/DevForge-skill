@@ -29,13 +29,13 @@ For technical consistency checks, use `devforge-architecture-validation` instead
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `module_design_completed`, `iteration_planning_completed`. If phase is not in this list or `architecture.xml` is missing, stop and instruct the user to complete prior phases first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `module_design_completed`, `iteration_planning_completed`.
+- If phase is earlier than `architecture_design_completed`, stop and instruct the user to complete `devforge-architecture-design` first.
+- If `architecture.xml` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
@@ -75,7 +75,7 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
    - Cross-reference each issue to architecture decisions in `DECISION_LOG.md`
 
 6. **Write `DESIGN_REVIEW.md`**
-   - Output file: `skill/artifacts/DESIGN_REVIEW.md`
+   - Output file: `PROJECT_SCAFFOLD/docs/architecture/validation/DESIGN_REVIEW.md`
    - Must include:
      - Review metadata (date, artifacts reviewed)
      - Issue table with ID, description, location, impact, suggested fix
@@ -83,6 +83,9 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
      - Human gate phrase
 
 7. **Self-validation: review quality**
+
+   See `skill/tools/validation-engine.md` for the common checks library.
+
    - Before finalizing, verify `DESIGN_REVIEW.md` quality with automated checks:
      - **Lens coverage**: Confirm issues exist from all three lenses (Attacker, Operator, Extender). If any lens is missing, add a note: "No issues identified from [Lens] perspective — re-verify."
      - **Severity completeness**: Verify every issue has a severity label (Must Fix / Should Fix / Nice to Fix / Documented Risks)
@@ -91,9 +94,12 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
      - **Cross-reference validity**: Verify every cited DECISION_LOG entry ID exists in `DECISION_LOG.md`; verify every cited PRD requirement exists in `PRD.md`
    - If any check fails, fix the review document before proceeding
 
-8. **Update `STATE.md`**
-   - Append all identified risks to **Known Pitfalls & Risks**
-   - Set `phase: design_review_completed` (or keep existing phase if validation not yet run)
+## State Update
+
+See `skill/tools/state-updater.md`. This skill transitions phase to `design_review_completed`.
+
+- Append all identified risks to **Known Pitfalls & Risks**
+- Set `phase: design_review_completed` (or keep existing phase if validation not yet run)
 
 9. **Human gate**
    - Present issue summary (count by severity)
@@ -135,7 +141,7 @@ When the user replies `[FIX <issue_id>]` at the human gate:
 
 ## Output Specification
 
-- `skill/artifacts/DESIGN_REVIEW.md`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/DESIGN_REVIEW.md`
 - `DESIGN_REVIEW_FIX_{issue_id}.md` (generated during FIX sub-flow)
 - Issues marked `resolved`, `deferred`, or `ignored` in `DESIGN_REVIEW.md`
 - Must include: Must Fix / Should Fix / Nice to Fix / Documented Risks sections

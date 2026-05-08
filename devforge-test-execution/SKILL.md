@@ -27,17 +27,18 @@ Execute all generated tests (unit, integration, end-to-end), analyze results, ge
 
 ## Precondition Check
 
-Read `STATE.md`. Acceptable phases: `module_design_completed`, `scaffolding_completed`, `iteration_planning_completed`. If no code or tests exist, stop and instruct user to complete scaffolding first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `module_design_completed`, `scaffolding_completed`, `iteration_planning_completed`.
+- If phase is earlier than `scaffolding_completed`, stop and instruct the user to complete `devforge-project-scaffolding` first.
+- If no code or tests exist, stop and instruct the user to complete `devforge-project-scaffolding` first.
 
 ## Language Adaptation
 
-- System instructions in English for maximum model compliance
-- User-facing gate messages in user's input language
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
 1. **Test checklist load**
-   - Read `RTM.md`, extract all rows with non-empty `Test Case ID`
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/RTM.md`, extract all rows with non-empty `Test Case ID`
    - Group by module, identify P0/P1 requirements with missing test coverage
    - Output `docs/architecture/validation/TEST_COVERAGE_GAP.md`
 
@@ -57,7 +58,7 @@ Read `STATE.md`. Acceptable phases: `module_design_completed`, `scaffolding_comp
    - If API key available, run real-LLM tests; else mark `skipped`
 
 5. **End-to-end test execution (PRD-based)**
-   - Read `PRD.md` User Stories, ensure each P0 story has end-to-end test
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md` User Stories, ensure each P0 story has end-to-end test
    - End-to-end test header MUST reference PRD:
      ```python
      # E2E Test: US-001 — User Login Flow
@@ -77,9 +78,13 @@ Read `STATE.md`. Acceptable phases: `module_design_completed`, `scaffolding_comp
 7. **RTM synchronization**
    - Passed tests → Status: `tested`
    - Failed tests → Status: `implemented` (not downgraded)
-   - Update `RTM.md` Test Case ID and Status columns
+   - Update `PROJECT_SCAFFOLD/docs/architecture/system/RTM.md` Test Case ID and Status columns
 
-8. **Gate**
+<HARD-GATE>
+Do NOT allow transition to iteration-planning or ops-ready if tests are failing or coverage is below the configured threshold. Test failures must be resolved or explicitly [FORCE_APPROVE]d before proceeding.
+</HARD-GATE>
+
+8. **Human Gate**
    - Present test report summary: pass rates, coverage, failure count
    - Say exactly: "测试报告已生成。单元测试通过率 X%，集成测试通过率 Y%，端到端测试通过率 Z%。"
    - Then list all available commands:

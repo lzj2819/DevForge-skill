@@ -28,28 +28,37 @@ This skill performs impact analysis, writes an incremental PRD, updates architec
 
 ## Precondition Check
 
-Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/STATE.md`).
-- Acceptable phases: `scaffolding_completed`, `module_design_completed`, `iteration_planning_completed`, `evolution_completed`
-- If phase is earlier than `scaffolding_completed`, stop and instruct the user to complete prior phases first
-- If `architecture.xml` is missing, stop — the system has no architecture baseline to increment upon
+See `skill/tools/precondition-checker.md`. Acceptable phases: `module_design_completed`, `iteration_planning_completed`, `evolution_completed`.
+- If phase is earlier than `module_design_completed`, stop and instruct the user to complete `devforge-module-design` first.
+- If `architecture.xml` is missing, stop and instruct the user to complete system-level architecture first.
+
+**Iteration scope analysis** (when phase is `module_design_completed`):
+- Analyze the proposed iteration scope
+- If scope contains `add_module` or `modify_coupling`:
+  - Verify affected modules exist in the Module Registry
+  - If any affected module has status `pending` (not design_completed):
+    - Stop and instruct user: "迭代范围包含新增模块或修改耦合，但 Module Registry 中以下模块尚未完成详细设计: [module_list]。请先运行 `devforge-module-design` 完成这些模块的设计。"
+- If scope contains only `extend_interface` or `no_impact` on existing modules:
+  - Allow proceeding with warning: "当前仅模块设计的部分完成为止，迭代范围限于已有模块的接口扩展。"
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
 1. **Load full baseline**
-   - Read `PRD.md` (existing requirements baseline)
-   - Read `architecture.xml` (system-level architecture baseline)
-   - Read `INTERFACE_CONTRACT.md` (existing I/O contracts)
-   - Read `DECISION_LOG.md` (reasoning chain to preserve)
-   - Read `STATE.md` (module registry, iteration history)
-   - Read all existing `module-prd.md` files (if module-level designs exist)
-   - Read `DESIGN_REVIEW.md` (known issues that might interact with new requirements)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md` (existing requirements baseline)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (system-level architecture baseline)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md` (existing I/O contracts)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md` (reasoning chain to preserve)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` (module registry, iteration history)
+   - Read all existing `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-prd.md` files (if module-level designs exist)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/validation/DESIGN_REVIEW.md` (known issues that might interact with new requirements)
    - Collect the user's new requirement description
+   - Analyze iteration scope against Module Registry:
+     - Identify which modules are affected
+     - Flag any module with status `pending` that would require design changes
 
 2. **Scope validation**
    - Compare new requirements against the **Immutable Goal** in `STATE.md`
@@ -72,7 +81,7 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
    - Severity levels: `breaking` (changes existing interface), `additive` (new interface only), `internal` (module-internal only)
 
 4. **Incremental PRD**
-   - Write `ITERATION_PRD.md` containing ONLY the new/modified requirements:
+   - Write `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PRD.md` containing ONLY the new/modified requirements:
      - For additive requirements: new user stories with `relates_to: US-XXX` linking to original PRD
      - For modified requirements: delta description (what changes, what stays the same)
      - Acceptance criteria for each new/modified user story
@@ -114,7 +123,7 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
      - Mark with `[ADDED v1.1]` annotation
 
 8. **Iteration plan generation**
-   - Write `ITERATION_PLAN.md` containing:
+   - Write `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PLAN.md` containing:
      - Iteration goal (one sentence)
      - Scope summary (what's in, what's explicitly out)
      - Affected module checklist with required skill flows:
@@ -135,12 +144,13 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
          trigger_condition: "any breaking change or coupling modification"
        ```
 
-8.5. **Post-iteration validation prompt**
-   - After the iteration's scaffolding is complete, if `ITERATION_PLAN.md::verification_gate::required` is true:
+9. **Post-iteration validation prompt**
+   - After the iteration's scaffolding is complete, if `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PLAN.md::verification_gate::required` is true:
      - Prompt user: "迭代实施涉及架构变更。回复 `[VALIDATE]` 重新运行架构验证，回复 `[SKIP]` 跳过（不推荐）。"
      - If user replies `[VALIDATE]`, trigger `devforge-architecture-validation`
 
-9. **Self-validation: iteration plan consistency**
+10. **Self-validation: iteration plan consistency**
+   - See `skill/tools/validation-engine.md` for the common checks library.
    - Before finalizing, verify iteration artifacts with automated checks:
      - **Impact matrix completeness**: Confirm every new requirement in `ITERATION_PRD.md` has a corresponding row in the Impact Matrix with non-empty Affected Module, Impact Type, and Severity
      - **No circular dependencies**: Scan updated `architecture.xml` `Coupling` nodes for circular dependencies among affected modules. If found, break the cycle before proceeding.
@@ -150,8 +160,9 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
      - **Backward compatibility documentation**: For every `breaking` change, confirm `ITERATION_PLAN.md` contains a backward compatibility or migration strategy
    - If any check fails, fix the iteration artifacts before proceeding
 
-10. **State update**
-   - Update `STATE.md`:
+11. **State Update**
+   - See `skill/tools/state-updater.md`. This skill transitions phase to `iteration_planning_completed`.
+   - Update `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`:
      - Append to **Completed Steps**: `[YYYY-MM-DD HH:MM] devforge-iteration-planning: Analyzed [N] new requirements. Impact: [X] modules affected. Iteration scope: [summary]`
      - Update **Current State**:
        - `phase: iteration_planning_completed`
@@ -159,11 +170,15 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
      - Update **Iteration History**: append new iteration entry with date, scope, and affected modules
      - Update **Module Registry**: add new modules with status `pending`; update affected modules' status if they change
      - Append iteration-specific risks to **Known Pitfalls**
-   - Update `RTM.md`:
+   - Update `PROJECT_SCAFFOLD/docs/architecture/system/RTM.md`:
      - Append new requirements from iteration with Status=`pending`
      - For affected modules with breaking interface changes, downgrade existing requirement Status from `verified` to `implemented`
 
-11. **Human gate**
+<HARD-GATE>
+Do NOT proceed with implementation of iteration items until the iteration plan is approved. Breaking changes in the iteration plan must be re-validated through architecture-validation and design-review before scaffolding or module-design changes are applied.
+</HARD-GATE>
+
+12. **Human gate**
     - Present iteration summary:
       - Number of new requirements
       - Impact matrix (modules affected, severity)
@@ -186,8 +201,8 @@ Before starting, read `skill/artifacts/STATE.md` (or `docs/architecture/system/S
 
 ## Output Specification
 
-- `skill/artifacts/ITERATION_PRD.md` (or `docs/architecture/system/ITERATION_PRD.md`)
-- `skill/artifacts/ITERATION_PLAN.md` (or `docs/architecture/system/ITERATION_PLAN.md`)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PRD.md` (or `docs/architecture/system/ITERATION_PRD.md`)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PLAN.md` (or `docs/architecture/system/ITERATION_PLAN.md`)
 - Updated `architecture.xml` with new/modified modules, interfaces, and couplings
 - Updated `INTERFACE_CONTRACT.md` with versioned interface changes
 - Updated module-level XML files for affected modules

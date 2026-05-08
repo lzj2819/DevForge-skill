@@ -16,14 +16,14 @@ This skill extracts the essential decisions, risks, and state from a completed s
 
 ## Input
 
-- `STATE.md` (current state, including existing Compressed Context if any)
-- The primary output artifact of the skill that just completed (e.g., `PRD.md`, `architecture.xml`, `VALIDATION_REPORT.md`)
-- `DECISION_LOG.md` (recent entries)
+- `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` (current state, including existing Compressed Context if any)
+- The primary output artifact of the skill that just completed (e.g., `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`, `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`, `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md`)
+- `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md` (recent entries)
 
 ## Workflow
 
 1. **Read existing compressed context**
-   - If `STATE.md` has a `Compressed Context` section, read it
+   - If `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` has a `Compressed Context` section, read it
    - If missing, start fresh
 
 2. **Extract key facts from the completed skill**
@@ -44,15 +44,15 @@ This skill extracts the essential decisions, risks, and state from a completed s
    - Do NOT modify Immutable Goal, Completed Steps, or Known Pitfalls
 
 5. **Update DecisionDigest list**
-   - In `STATE.md`, maintain a `DecisionDigest` list (if not present, create it)
+   - In `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`, maintain a `DecisionDigest` list (if not present, create it)
    - Append each new decision as: `[YYYY-MM-DD] [DecisionID]: [One-line summary]`
    - Keep only the last 20 entries; truncate older ones
 
 ## Output Specification
 
-- Updated `STATE.md` with refreshed `Compressed Context`
-- Updated `STATE.md` `Artifact Index`
-- Updated `STATE.md` `DecisionDigest` list
+- Updated `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` with refreshed `Compressed Context`
+- Updated `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` `Artifact Index`
+- Updated `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` `DecisionDigest` list
 
 ## Example Compressed Context
 

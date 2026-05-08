@@ -61,13 +61,13 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
     ↓ [APPROVE]
 2. architecture-design (Design deepen)
     ↓ [APPROVE]
-    ┌──────────────────┬──────────────────┐
-    ↓                  ↓                  ↓
-3a. architecture-    3b. design-review   ← Both run by default
-    validation          (adversarial)
-    (technical)         inspection
-    ↓ [APPROVE]         ↓ [APPROVE/FIX]
-    └──────────────────┴──────────────────┘
+    ┌──────────────────┬──────────────────┬──────────────────┐
+    ↓                  ↓                  ↓                  ↓
+3a. architecture-    3b. design-review   3c. security-audit (optional)
+    validation          (adversarial)       (security scan)
+    (technical)         inspection          (optional)
+    ↓ [APPROVE]         ↓ [APPROVE/FIX]     ↓ [APPROVE/SKIP]
+    └──────────────────┴──────────────────┴──────────────────┘
                       ↓ [APPROVE]
 4. project-scaffolding (Implement)
     ↓ [APPROVE]
@@ -84,6 +84,7 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 | 2 | `devforge-architecture-design/` | `[APPROVE]` after PRD | Design |
 | 3a | `devforge-architecture-validation/` | `[APPROVE]` after architecture | Verify |
 | 3b | `devforge-design-review/` | `[DESIGN_REVIEW]` after validation | Verify |
+| 3c | `devforge-security-audit/` | `[SECURITY_AUDIT]` after design-review | Verify |
 | 4 | `devforge-project-scaffolding/` | `[APPROVE]` after validation/review | Implement (infrastructure) |
 | 5 | `devforge-module-design/` | `[MODULE {id}]` / `[MODULE_BATCH {ids}]` | Design + Implement (code skeleton) |
 | 6 | `devforge-test-execution/` | `[TEST]` | Verify |
@@ -95,9 +96,23 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 Plus: `context-compression/` (utility), `devforge-security-audit/` (security scan), `extensions/` (domain-specific overlays: ai-agent-design, data-pipeline-design, mobile-app-design).
 
 **Key flow rules:**
-- Stages 3a and 3b both run by default (no longer mutually exclusive). User can `[SKIP_REVIEW]` or `[SKIP_VALIDATION]`.
+- Stages 3a and 3b both run by default. Stage 3c (security-audit) is optional but recommended. User can `[SKIP_REVIEW]` or `[SKIP_VALIDATION]`.
 - Stage 5 (`module-design`) requires `scaffolding_completed` — not `architecture_design_completed`.
 - Stage 7 (`iteration-planning`) loops back to 3a/3b if `verification_gate::required` is true (breaking changes).
+
+### Stage 3: Triple Verification Mechanism
+
+| Dimension | 3a. architecture-validation | 3b. design-review | 3c. security-audit |
+|-----------|---------------------------|-------------------|-------------------|
+| **Purpose** | Verify "design is correctly specified" | Verify "design has no gaps/errors" | Verify "design has no security flaws" |
+| **Perspective** | Technical consistency (engineer view) | Adversarial review (critic view) | Security scan (auditor view) |
+| **Input** | architecture.xml, INTERFACE_CONTRACT.md | PRD, architecture.xml, DECISION_LOG | architecture.xml, code, dependencies |
+| **Check items** | XML Schema compliance, interface consistency, PRD traceability | Security, operability, scalability | Vulnerabilities, secrets, compliance |
+| **Output** | VALIDATION_REPORT.md (PASS/FAIL) | DESIGN_REVIEW.md (issue list, no PASS/FAIL) | SECURITY_AUDIT_REPORT.md (risk levels) |
+| **Result** | Fail must be fixed before continuing | Issues can be accepted, deferred, or fixed | Critical issues must be fixed before deployment |
+| **Analogy** | Compiler type checking | Code review | Security penetration test |
+
+**Relationship**: validation ensures "design documents are self-consistent", design-review ensures "design decisions are correct", security-audit ensures "design is secure". The three complement each other and cannot substitute for one another.
 
 ### Three-Layer XML Architecture Authority
 
@@ -121,7 +136,7 @@ Each skill declares Required vs Optional artifacts. When context exceeds thresho
 
 ### STATE.md as Central State File
 
-`STATE.md` (template in `devforge-state.md`) is the single source of truth for cross-session continuity. It has 11 sections including Immutable Goal (never overwritten), Completed Steps (append-only), Module Registry, Iteration History, Compressed Context, Artifact Index, Error Log, and Intervention Log. The file path varies: `skill/artifacts/STATE.md` during initial development, `docs/architecture/system/STATE.md` during incremental iteration.
+`STATE.md` (template in `devforge-state.md`) is the single source of truth for cross-session continuity. It has 11 sections including Immutable Goal (never overwritten), Completed Steps (append-only), Module Registry, Iteration History, Compressed Context, Artifact Index, Error Log, and Intervention Log. The file path varies: `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`.
 
 ### Human Gate Commands
 

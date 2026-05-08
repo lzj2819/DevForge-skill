@@ -7,7 +7,7 @@ All XML files must validate against these schemas.
 
 ## Layer 1: System Architecture (`architecture.xml`)
 
-**File location**: `docs/architecture/system/architecture.xml` (or `skill/artifacts/architecture.xml`)
+**File location**: `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`
 
 **Root element**: `SystemArchitecture`
 

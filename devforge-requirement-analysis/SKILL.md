@@ -26,13 +26,13 @@ Transform a raw product idea into a structured, reviewable PRD. This skill combi
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md` if it exists. If `phase` is already `requirement_analysis_completed` or later, confirm with the user whether to overwrite or continue from the existing artifact.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `initial`.
+- If phase is earlier than `initial`, stop and instruct the user to complete `devforge-requirement-analysis` first.
+- If no prior STATE.md exists, proceed with fresh initialization.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Elicitation Principles
 
@@ -51,7 +51,7 @@ Apply these throughout steps 3–5:
    - Surface edge-case questions (malicious traffic, third-party downtime, data consistency)
 
 2. **State initialization + Project directory initialization**
-   - Read `skill/artifacts/STATE.md` if it exists
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` if it exists
    - If starting fresh:
      a. **Ask for project name**: "请为这个项目命名（如 my-todo-app）："
      b. **Determine project root**: Default to `./{project-name}/`. If a directory with that name already exists, prompt for confirmation to continue inside it or choose a different name.
@@ -83,7 +83,7 @@ Apply these throughout steps 3–5:
                 ├── diagrams/           # Mermaid architecture diagrams
                 └── INDEX.md            # Unified architecture document index
         ```
-     e. **Create `STATE.md`** at `skill/artifacts/STATE.md` and populate the **Immutable Goal** section with the user's product idea, success metrics, and scope boundary
+     e. **Create `STATE.md`** at `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` and populate the **Immutable Goal** section with the user's product idea, success metrics, and scope boundary
      f. Write the project root path to `STATE.md` under a **Project Metadata** section: `project_root: {project-root}`
    - If `STATE.md` exists and `phase` is already `requirement_analysis_completed` or later, confirm with user whether to overwrite or continue from existing artifact
 
@@ -92,7 +92,7 @@ Apply these throughout steps 3–5:
    - For each question, provide your recommended answer with reasoning so the user can confirm or correct rather than answer from scratch
    - Cover at minimum: user personas, primary pain points, business value, and scope boundaries — follow conditional branches when an answer reveals them
 
-3.5. **Web Research (conditional)**
+3a. **Web Research (conditional)**
    - After Step 3 completes, determine if web search is needed:
      - Search IF: the user's domain/product type has insufficient information in training data (emerging tech, niche industries), OR user requests competitor analysis, industry standards, or compliance requirements
    - **Search scope** (strictly limited):
@@ -126,10 +126,10 @@ Apply these throughout steps 3–5:
      - Non-functional requirements (performance, security, compliance)
      - Cross-module interaction points
      - Main process flow and fallback strategies
-   - Write the PRD to `skill/artifacts/PRD.md`
+   - Write the PRD to `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`
 
 6. **Requirement Traceability Matrix (RTM) generation**
-   - After PRD is complete, generate `skill/artifacts/RTM.md`
+   - After PRD is complete, generate `PROJECT_SCAFFOLD/docs/architecture/system/RTM.md`
    - RTM structure:
      - Columns: Requirement ID, User Story, Acceptance Criteria, Architecture Module, Component, Test Case ID, Status
      - Each P0/P1 requirement MUST have at least one mapped Module and Component
@@ -151,6 +151,9 @@ Apply these throughout steps 3–5:
    - Each surviving entry must include: date, decision, reasoning, and rejected alternatives (when applicable)
 
 8. **Self-validation: PRD completeness**
+
+   See `skill/tools/validation-engine.md` for the common checks library.
+
    - Before proceeding, verify PRD and RTM quality with automated checks:
      - **Section completeness**: Confirm all required sections exist in `PRD.md`: Project Background, User Personas, Terminology, User Stories, Functional Requirements (P0/P1/P2), Non-Functional Requirements, Cross-Module Interactions, Main Process Flow, Fallback Strategies
      - **Acceptance criteria observability**: Scan all acceptance criteria for unquantified adjectives ("fast", "user-friendly", "seamless", "robust"). If found, add quantified metrics or remove the adjective.
@@ -158,11 +161,13 @@ Apply these throughout steps 3–5:
      - **Cross-module interaction consistency**: Verify that every interaction point listed in "Cross-Module Interactions" is referenced by at least one user story or functional requirement
    - If any check fails, fix the PRD or RTM before proceeding
 
-9. **State update**
-   - Read `skill/artifacts/STATE.md`
+9. **State Update**
+
+   See `skill/tools/state-updater.md`. This skill transitions phase to `requirement_analysis_completed`.
+
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`
    - Write the **Immutable Goal** section if not already present (verbatim user idea + success metrics + scope boundary)
    - Append to **Completed Steps**: `[YYYY-MM-DD HH:MM] devforge-requirement-analysis: Locked P0/P1/P2 scope. Key decisions: [list]`
-   - Set `phase: requirement_analysis_completed`
    - Set DIVE `Design: in_progress`, others `pending`
    - Update artifact statuses
    - Record **Project Metadata** in STATE.md: `project_root`, `project_name`, `created_at`
@@ -191,9 +196,9 @@ Do NOT proceed to architecture-design, write any code, or scaffold any project u
 
 All outputs are written relative to the **project root** (`{project-root}/`):
 
-- `skill/artifacts/PRD.md`
-- `skill/artifacts/RTM.md` (Requirement Traceability Matrix)
-- `skill/artifacts/DECISION_LOG.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/RTM.md` (Requirement Traceability Matrix)
+- `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md`
 - Must include P0/P1/P2 grading
 - Must include acceptance criteria for every user story
 - Must include at least one abnormal-path fallback

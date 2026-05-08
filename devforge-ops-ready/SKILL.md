@@ -26,15 +26,13 @@ Generate production-grade infrastructure as code (IaC) from an approved architec
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `scaffolding_completed`, `module_design_completed`, `iteration_planning_completed`.
-
-If `architecture.xml` is missing, stop and instruct the user to complete prior phases first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `scaffolding_completed`, `module_design_completed`, `iteration_planning_completed`.
+- If phase is earlier than `scaffolding_completed`, stop and instruct the user to complete `devforge-project-scaffolding` first.
+- If `architecture.xml` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
@@ -149,7 +147,7 @@ If `architecture.xml` is missing, stop and instruct the user to complete prior p
    - If any check fails, fix the infrastructure artifacts before proceeding
 
 10. **State update**
-   - Update `STATE.md`: append to Completed Steps
+   - See `skill/tools/state-updater.md`. Append to Completed Steps.
 
 11. **Human gate**
    - Present summary: "生产就绪基础设施已生成，包含 Terraform、K8s、监控和多环境配置。请确认当前阶段输出。"

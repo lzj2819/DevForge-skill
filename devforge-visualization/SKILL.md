@@ -25,20 +25,17 @@ Generate visual architecture diagrams from an approved `architecture.xml`. This 
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `design_review_completed`, `scaffolding_completed`, `module_design_completed`.
-
-If `architecture.xml` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `design_review_completed`, `scaffolding_completed`, `module_design_completed`.
+- If `architecture.xml` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
 1. **Parse architecture XML**
-   - Read `skill/artifacts/architecture.xml` (or `docs/architecture/system/architecture.xml`)
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`
    - Read module-level XMLs if available (`modules/{id}/module-architecture.xml`)
    - Build internal graph: modules, couplings, interfaces, data models
 
@@ -76,8 +73,9 @@ If `architecture.xml` is missing, stop and instruct the user to complete `devfor
    - Verify every interface in sequence diagram exists in `INTERFACE_CONTRACT.md`
    - Verify every entity in ER diagram exists in `DataModel`
 
-7. **State update**
-   - Update `STATE.md`: append to Completed Steps
+7. **State Update**
+   - See `skill/tools/state-updater.md`. This skill does not transition phase.
+   - Update `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`: append to Completed Steps
 
 8. **Human gate**
    - Present diagram summary: "已生成 4 张架构图：系统上下文图、模块交互时序图、数据流图、ER 图。请确认当前阶段输出。"

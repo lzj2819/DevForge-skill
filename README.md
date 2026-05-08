@@ -175,7 +175,7 @@ cd $env:USERPROFILE\.claude\devforge-skills; git pull
 | Claude 没有自动调用 DevForge Skill | Skill 未放入正确路径 | 确认路径为 `~/.claude/skills/` 而非 `~/.claude/` 子目录 |
 | 提示 "找不到 Skill" | 目录名或文件名不正确 | 确认目录名为 `devforge-requirement-analysis` 等，内部有 `SKILL.md` |
 | `[MODULE]` 命令无效 | 尚未完成阶段 2 架构设计 | 先完成需求分析和架构设计，确保 `STATE.md` 存在 |
-| 产物文件没有生成 | 权限问题或路径错误 | 检查项目根目录是否有写权限，确认 `skill/artifacts/` 和 `docs/architecture/` 目录已被正确创建 |
+| 产物文件没有生成 | 权限问题或路径错误 | 检查项目根目录是否有写权限，确认 `PROJECT_SCAFFOLD/docs/architecture/` 目录已被正确创建 |
 | Skill 行为与文档不符 | 版本不匹配 | 运行 `git log --oneline -1` 确认版本为 v1.2+ |
 
 ---
@@ -367,7 +367,7 @@ cp .env.example .env
 
 **A:** 可以。DevForge 支持**增量迭代模式**：
 
-1. 将现有项目的 PRD、架构文档放入 `skill/artifacts/` 目录
+1. 将现有项目的 PRD、架构文档放入 `PROJECT_SCAFFOLD/docs/architecture/system/` 目录
 2. 手动创建 `STATE.md`，填写 `Immutable Goal` 和 `Module Registry`
 3. 直接调用 `devforge-iteration-planning` 输入新需求
 4. Skill 会自动进行影响分析，只修改受影响的模块，保持现有代码不动

@@ -28,15 +28,13 @@ Analyze failing tests, error logs, or existing code to provide actionable bug fi
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `scaffolding_completed`, `module_design_completed`, `iteration_planning_completed`, `test_execution_completed`.
-
-If no code exists, stop and instruct the user to complete scaffolding first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `scaffolding_completed`, `module_design_completed`, `iteration_planning_completed`, `test_execution_completed`.
+- If phase is earlier than `scaffolding_completed`, stop and instruct the user to complete `devforge-project-scaffolding` first.
+- If no code exists, stop and instruct the user to complete `devforge-project-scaffolding` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Context Loading Protocol
 
@@ -76,7 +74,7 @@ If no code exists, stop and instruct the user to complete scaffolding first.
    - If the fix requires interface changes, flag as breaking and warn user
 
 4. **Generate debug report**
-   - Output: `skill/artifacts/DEBUG_REPORT.md`
+   - Output: `PROJECT_SCAFFOLD/docs/architecture/validation/DEBUG_REPORT.md`
    - Contents:
      - Symptom summary
      - Root cause (with code references)
@@ -113,12 +111,16 @@ If no code exists, stop and instruct the user to complete scaffolding first.
      - Risk level (low / medium / high — high = may affect behavior)
 
 4. **Generate refactor report**
-   - Output: `skill/artifacts/REFACTOR_REPORT.md`
+   - Output: `PROJECT_SCAFFOLD/docs/architecture/validation/REFACTOR_REPORT.md`
    - Contents:
      - Issue list with severity (Must Fix / Should Fix / Nice to Fix)
      - Before/after snippets
      - Risk assessment per refactoring
      - Suggested execution order (low risk first)
+
+<HARD-GATE>
+Do NOT apply refactoring changes or close a debug session until the user explicitly approves the fix strategy. In Mode A (Bug Diagnosis), the root cause analysis must be confirmed before generating the fix. In Mode B (Refactoring), the refactoring plan must be approved before applying changes.
+</HARD-GATE>
 
 5. **Human gate**
    - Present summary: "调试/重构报告已生成。"
@@ -139,8 +141,8 @@ If no code exists, stop and instruct the user to complete scaffolding first.
 
 ## Output Specification
 
-- `skill/artifacts/DEBUG_REPORT.md` (for bug diagnosis mode)
-- `skill/artifacts/REFACTOR_REPORT.md` (for refactoring mode)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/DEBUG_REPORT.md` (for bug diagnosis mode)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/REFACTOR_REPORT.md` (for refactoring mode)
 
 ## Red Flags
 

@@ -27,28 +27,28 @@ Generate hard deliverables by grounding all historical conclusions into runnable
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `design_review_completed`, `module_design_completed`, `iteration_planning_completed`. If phase is not in this list, stop and instruct the user to complete prior phases.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `design_review_completed`, `module_design_completed`, `iteration_planning_completed`.
+- If phase is earlier than `architecture_design_completed`, stop and instruct the user to complete `devforge-architecture-design` first.
+- If `STATE.md` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
 1. **Read all artifacts**
    - Load ALL historical artifacts:
-     - `PRD.md` (requirements origin)
-     - `STATE.md` (current phase + known pitfalls + module registry)
-     - `DECISION_LOG.md` (reasoning chain)
-     - `ARCHITECTURE.md` (design summary)
-     - `architecture.xml` (strict schema + DecisionTrace + ModuleDetail refs)
-     - `INTERFACE_CONTRACT.md` (I/O boundaries)
-     - `VALIDATION_REPORT.md` (if present, technical validation results)
-     - `DESIGN_REVIEW.md` (if present, issue list)
-     - Module-level artifacts (if present): `modules/{module_id}/module-architecture.xml`, `modules/{module_id}/module-interface-contract.md`
-     - Component-level artifacts (if present): `modules/{module_id}/components/{component_id}/component-spec.xml`
+     - `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md` (requirements origin)
+     - `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` (current phase + known pitfalls + module registry)
+     - `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md` (reasoning chain)
+     - `PROJECT_SCAFFOLD/docs/architecture/system/ARCHITECTURE.md` (design summary)
+     - `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (strict schema + DecisionTrace + ModuleDetail refs)
+     - `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md` (I/O boundaries)
+     - `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md` (if present, technical validation results)
+     - `PROJECT_SCAFFOLD/docs/architecture/validation/DESIGN_REVIEW.md` (if present, issue list)
+     - Module-level artifacts (if present): `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-architecture.xml`, `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-interface-contract.md`
+     - Component-level artifacts (if present): `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/components/{component_id}/component-spec.xml`
 
 2. **Internal planning**
    - Create an implementation plan for the scaffolding work:
@@ -58,7 +58,7 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
    - Keep the plan lightweight (a short bullet list is sufficient)
 
 3. **Directory tree and dependencies**
-   - Generate the project directory tree under `skill/artifacts/PROJECT_SCAFFOLD/`
+   - Generate the project directory tree under `PROJECT_SCAFFOLD/`
    - Generate architecture documentation tree under `docs/architecture/`:
      - System-level artifacts → `docs/architecture/system/`
      - Module-level artifacts → `docs/architecture/modules/{module_id}/`
@@ -155,10 +155,13 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
       - Consequences: Positive and negative
 
 12. **Decision Log and Changelog**
-    - Append scaffolding decisions to `skill/artifacts/DECISION_LOG.md`
-    - Generate `skill/artifacts/PROJECT_SCAFFOLD/CHANGELOG.md` with an initial entry
+    - Append scaffolding decisions to `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md`
+    - Generate `PROJECT_SCAFFOLD/CHANGELOG.md` with an initial entry
 
 13. **Self-validation: generated artifacts**
+
+    See `skill/tools/validation-engine.md` for the common checks library.
+
     - Run automated checks on all generated files BEFORE proceeding:
       - **Syntax validation**: For each generated code file, verify syntactic validity:
         - Python: `python -m py_compile <file>` must pass
@@ -185,15 +188,18 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
       - Does its state management match the XML StateModel?
     - If any answer is untraceable, mark as traceability gap and append to STATE.md Known Pitfalls
 
-16. **State update**
-    - Update `STATE.md`:
+16. **State Update**
+
+    See `skill/tools/state-updater.md`. This skill transitions phase to `scaffolding_completed`.
+
+    - Update `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`:
       - Append to **Completed Steps**: `[YYYY-MM-DD HH:MM] devforge-project-scaffolding: Generated PROJECT_SCAFFOLD with [N] files`
       - Update **Current State**: `phase: scaffolding_completed`, DIVE `Implement: infrastructure_completed`, `Verify: pending`, `Evolve: pending`
-   - Update `docs/architecture/INDEX.md` with generated artifact links
+   - Update `PROJECT_SCAFFOLD/docs/architecture/INDEX.md` with generated artifact links
 
 17. **Human gate**
     - Present a summary of generated files (bullet list)
-    - Say exactly: "项目基础设施已生成，包含工程目录、CI/CD 配置、测试框架、文档同步规则和环境变量模板。业务代码将在模块详细设计阶段生成。请确认当前阶段输出。回复 [APPROVE] 进入模块详细设计阶段，或提出修改意见。"
+    - Say exactly: "项目基础设施已生成，包含工程目录、CI/CD 配置、测试框架、文档同步规则和环境变量模板。业务代码将在模块详细设计阶段生成。请确认当前阶段输出。"
     - Then list all available commands:
       ```
       可用命令：
@@ -214,11 +220,11 @@ Do NOT mark the DevForge workflow as complete until the user replies [APPROVE] o
 
 ## Output Specification
 
-- `skill/artifacts/PROJECT_SCAFFOLD/` containing concrete, runnable files
-- `skill/artifacts/PROJECT_SCAFFOLD/.env.template`
-- `skill/artifacts/PROJECT_SCAFFOLD/docs/sync-rules.md`
-- `skill/artifacts/PROJECT_SCAFFOLD/docs/ADR.md`
-- `skill/artifacts/PROJECT_SCAFFOLD/CHANGELOG.md`
+- `PROJECT_SCAFFOLD/` containing concrete, runnable files
+- `PROJECT_SCAFFOLD/.env.template`
+- `PROJECT_SCAFFOLD/docs/sync-rules.md`
+- `PROJECT_SCAFFOLD/docs/ADR.md`
+- `PROJECT_SCAFFOLD/CHANGELOG.md`
 - Code reasoning comments in every core module header
 - Inline TODOs for every DESIGN_REVIEW Must Fix / Should Fix issue
 - No placeholder text or abstract suggestions allowed

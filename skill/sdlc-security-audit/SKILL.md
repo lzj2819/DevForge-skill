@@ -21,6 +21,22 @@
 | **检测能力** | 逻辑漏洞、设计缺陷 | 注入攻击、密钥泄露、不安全的 API 使用 |
 | **修复粒度** | 模块级、接口级 | 函数级、代码行级 |
 
+## Precondition Check
+
+See `skill/tools/precondition-checker.md`. Acceptable phases: `design_review_completed`, `architecture_validated`, `test_execution_completed`, `iteration_planning_completed`.
+- If phase is earlier than `design_review_completed`, stop and instruct the user to complete `devforge-design-review` first.
+- If `architecture.xml` is missing, stop and instruct the user to complete system-level architecture first.
+
+## Language Adaptation
+
+See `skill/tools/language-adaptation.md`.
+
+## When to Use
+
+- Automatically triggered after `devforge-design-review` completes (user can `[SKIP]`)
+- User can manually trigger by typing `[SECURITY_AUDIT]` at any time after design-review
+- Do NOT use if system-level architecture has not been approved
+
 ---
 
 ## 2. 触发条件
@@ -289,7 +305,7 @@ devforge security-audit --all
 devforge security-audit --path src/auth/
 
 # 生成报告
-devforge security-audit --report SECURITY_AUDIT_REPORT.md
+devforge security-audit --report PROJECT_SCAFFOLD/docs/architecture/validation/SECURITY_AUDIT_REPORT.md
 ```
 
 ### 6.2 集成到 CI/CD
@@ -309,7 +325,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: security-report
-          path: SECURITY_AUDIT_REPORT.md
+          path: PROJECT_SCAFFOLD/docs/architecture/validation/SECURITY_AUDIT_REPORT.md
 ```
 
 ---
@@ -325,6 +341,10 @@ jobs:
 | Java | `rules/java-security.yaml` | CodeQL, SpotBugs |
 | Go | `rules/go-security.yaml` | gosec, Semgrep |
 | 通用 | `rules/common-secrets.yaml` | GitLeaks, truffleHog |
+
+## State Update
+
+See `skill/tools/state-updater.md`. This skill does not transition phase; it appends findings to Known Pitfalls.
 
 ---
 

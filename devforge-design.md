@@ -136,8 +136,8 @@ description: Use when a user provides an initial product idea or goal and needs 
 **Input**: A raw product idea or goal in natural language.
 
 **Output**:
-- `skill/artifacts/PRD.md`
-- `skill/artifacts/DECISION_LOG.md` (seeded)
+- `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md` (seeded)
 
 **VCMF Checkpoints**:
 - Design as Contract: PRD must define closed-loop success metrics and scope boundaries
@@ -153,8 +153,8 @@ description: Use when a user provides an initial product idea or goal and needs 
 5. Extract project characteristic tags for dynamic pattern selection (e.g., `ai_agent`, `frontend_heavy`)
 6. Identify cross-module interaction points
 7. Generate structured PRD
-8. Write PRD to `skill/artifacts/PRD.md`
-9. Seed `skill/artifacts/DECISION_LOG.md`
+8. Write PRD to `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`
+9. Seed `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md`
 10. Update `STATE.md`: `phase: requirement_analysis_completed`
 11. Present summary and gate: "PRD 和决策日志已生成。请确认当前阶段输出。回复 [APPROVE] 进入架构设计阶段，或提出修改意见。"
 
@@ -171,13 +171,13 @@ description: Use when a PRD has been approved and the user needs system architec
 
 **Scope**: Original Phase 3 (deep architecture modeling + dual-track test design). v1.1 adds dynamic pattern selection, three-layer XML, and domain extension loading.
 
-**Input**: Approved `skill/artifacts/PRD.md`.
+**Input**: Approved `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`.
 
 **Output**:
-- `skill/artifacts/ARCHITECTURE.md`
-- `skill/artifacts/INTERFACE_CONTRACT.md`
-- `skill/artifacts/architecture.xml` (System Level)
-- `skill/artifacts/modules/{module_id}/module-architecture.xml` (templates)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ARCHITECTURE.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (System Level)
+- `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-architecture.xml` (templates)
 
 **VCMF Checkpoints**:
 - Design as Contract: Architecture traceable back to PRD; no invented requirements
@@ -187,7 +187,7 @@ description: Use when a PRD has been approved and the user needs system architec
 
 **Key Workflow**:
 1. Read `STATE.md`, `PRD.md`, `DECISION_LOG.md`
-2. Read `skill/references/architecture-patterns.md` (10-pattern library)
+2. Read `references/architecture-patterns.md` (10-pattern library)
 3. Extract project characteristic tags from PRD; dynamically select top 4-6 most relevant patterns
 4. If tags include `ai_agent`, `data_pipeline`, or `mobile_app`, load corresponding domain extension
 5. Evaluate selected patterns in parallel with AI-specific dimensions (if applicable)
@@ -215,16 +215,16 @@ description: Use when a system architecture XML and interface contracts have bee
 **Scope**: Original Phase 4 (LLM sandbox simulation + architecture self-check). v1.1 adds XML delta reports and reference integrity checks.
 
 **Input**:
-- `skill/artifacts/PRD.md`
-- `skill/artifacts/ARCHITECTURE.md`
-- `skill/artifacts/INTERFACE_CONTRACT.md`
-- `skill/artifacts/architecture.xml`
+- `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/ARCHITECTURE.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`
 - Module-level XMLs (if exist)
 
 **Output**:
-- `skill/artifacts/VALIDATION_REPORT.md`
-- `docs/architecture/validation/VALIDATION_DELTA_{YYYYMMDD}.md`
-- `skill/artifacts/health-check.sh`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_DELTA_{YYYYMMDD}.md`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/health-check.sh`
 
 **VCMF Checkpoints**:
 - Design as Contract: Verify XML modules trace back to PRD requirements
@@ -263,7 +263,7 @@ description: Use when a system architecture has been designed and the user wants
 **Input**: All historical artifacts (PRD, STATE, DECISION_LOG, ARCHITECTURE, XML, INTERFACE_CONTRACT).
 
 **Output**:
-- `skill/artifacts/DESIGN_REVIEW.md`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/DESIGN_REVIEW.md`
 
 **VCMF Checkpoints**:
 - Design as Contract: Flag orphaned assumptions; verify decisions trace to PRD
@@ -300,11 +300,11 @@ description: Use when architecture design (and optional validation) is approved 
 **Input**: All prior artifacts + XML schemas.
 
 **Output**:
-- `skill/artifacts/PROJECT_SCAFFOLD/` directory tree with runnable files
-- `docs/architecture/system/` and `docs/architecture/modules/{id}/`
-- `.env.template`
-- `docs/sync-rules.md`
-- `CHANGELOG.md`
+- `PROJECT_SCAFFOLD/` directory tree with runnable files
+- `PROJECT_SCAFFOLD/docs/architecture/system/` and `PROJECT_SCAFFOLD/docs/architecture/modules/{id}/`
+- `PROJECT_SCAFFOLD/.env.template`
+- `PROJECT_SCAFFOLD/docs/sync-rules.md`
+- `PROJECT_SCAFFOLD/CHANGELOG.md`
 
 **VCMF Checkpoints**:
 - Design as Contract: Every generated infrastructure file traceable to PRD or Architecture
@@ -314,7 +314,7 @@ description: Use when architecture design (and optional validation) is approved 
 - XML as Authority: `docs/architecture/INDEX.md` correctly indexes all XML artifacts; CI enforces XML consistency
 
 **Key Workflow**:
-1. Read all prior artifacts, `STATE.md`, and `skill/references/xml-schemas.md`
+1. Read all prior artifacts, `STATE.md`, and `references/xml-schemas.md`
 2. Internal lightweight planning (files, tests, directories)
 3. Generate directory tree and dependency configs
 4. Copy architecture artifacts to `docs/architecture/`; generate `.gitattributes`
@@ -346,10 +346,10 @@ description: Use when a system-level architecture has been approved and the user
 **Input**: System-level PRD, `architecture.xml`, `INTERFACE_CONTRACT.md`, target `module_id`.
 
 **Output**:
-- `modules/{module_id}/module-prd.md`
-- `modules/{module_id}/module-architecture.xml`
-- `modules/{module_id}/module-interface-contract.md`
-- `modules/{module_id}/components/{component_id}/component-spec.xml` (templates)
+- `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-prd.md`
+- `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-architecture.xml`
+- `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-interface-contract.md`
+- `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/components/{component_id}/component-spec.xml` (templates)
 - `PROJECT_SCAFFOLD/{component_file_path}` — precise code skeletons for each component
 
 **VCMF Checkpoints**:
@@ -388,10 +388,10 @@ description: Use when a project has completed initial scaffolding and the user w
 **Input**: All historical artifacts + new requirement description.
 
 **Output**:
-- `ITERATION_PRD.md`
-- `ITERATION_PLAN.md`
-- Updated `architecture.xml` (incremental changes)
-- Updated `INTERFACE_CONTRACT.md` (versioned changes)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PRD.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/ITERATION_PLAN.md`
+- Updated `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (incremental changes)
+- Updated `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md` (versioned changes)
 - Sync report
 
 **VCMF Checkpoints**:
@@ -495,24 +495,54 @@ skill/
 │   ├── architecture-ci.sh             # CI health check script (6 checks incl. security)
 │   ├── xml-sync.py                    # XML sync and validation script
 │   └── package-plugin.py              # Packaging script for distribution
-├── artifacts/                         # Generated artifacts (or docs/architecture/ in iteration mode)
-│   ├── STATE.md
-│   ├── PRD.md
-│   ├── DECISION_LOG.md
-│   ├── INTERFACE_CONTRACT.md
-│   ├── ARCHITECTURE.md
-│   ├── architecture.xml
-│   ├── VALIDATION_REPORT.md
-│   ├── VALIDATION_DELTA.md
-│   ├── DESIGN_REVIEW.md
-│   ├── SECURITY_AUDIT_REPORT.md
-│   ├── ITERATION_PRD.md
-│   ├── ITERATION_PLAN.md
-│   ├── health-check.sh
+├── artifacts/                         # Generated artifacts
 │   └── PROJECT_SCAFFOLD/
-│       └── docs/
-│           ├── sync-rules.md
-│           └── ADR.md
+│       ├── docs/
+│       │   ├── architecture/
+│       │   │   ├── system/
+│       │   │   │   ├── STATE.md
+│       │   │   │   ├── PRD.md
+│       │   │   │   ├── DECISION_LOG.md
+│       │   │   │   ├── INTERFACE_CONTRACT.md
+│       │   │   │   ├── ARCHITECTURE.md
+│       │   │   │   ├── architecture.xml
+│       │   │   │   ├── ITERATION_PRD.md
+│       │   │   │   ├── ITERATION_PLAN.md
+│       │   │   │   ├── ADR.md
+│       │   │   │   ├── schema.sql
+│       │   │   │   ├── ERD.md
+│       │   │   │   └── openapi.yaml
+│       │   │   ├── validation/
+│       │   │   │   ├── VALIDATION_REPORT.md
+│       │   │   │   ├── VALIDATION_DELTA.md
+│       │   │   │   └── health-check.sh
+│       │   │   ├── modules/
+│       │   │   │   └── {module_id}/
+│       │   │   │       ├── module-prd.md
+│       │   │   │       ├── module-architecture.xml
+│       │   │   │       ├── module-interface-contract.md
+│       │   │   │       └── components/
+│       │   │   │           └── {component_id}/
+│       │   │   │               └── component-spec.xml
+│       │   │   └── diagrams/
+│       │   │       ├── system-context.md
+│       │   │       ├── module-interaction.md
+│       │   │       ├── data-flow.md
+│       │   │       └── er-diagram.md
+│       │   ├── sync-rules.md
+│       │   └── ops/
+│       │       └── runbook.md
+│       ├── infrastructure/
+│       │   ├── terraform/
+│       │   ├── kubernetes/
+│       │   ├── monitoring/
+│       │   └── multi-env/
+│       ├── tests/
+│       │   ├── mock/
+│       │   ├── real/
+│       │   └── end_to_end/
+│       ├── .env.template
+│       └── CHANGELOG.md
 ├── devforge-requirement-analysis/
 │   └── SKILL.md
 ├── devforge-architecture-design/
@@ -599,7 +629,7 @@ description: Use when a system architecture XML has been approved and the user w
 
 **Scope**: Generate Mermaid-based architecture diagrams from `architecture.xml`.
 
-**Input**: Approved `skill/artifacts/architecture.xml`.
+**Input**: Approved `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`.
 
 **Output**:
 - `docs/architecture/diagrams/system-context.md`
@@ -678,8 +708,8 @@ description: Use when tests are failing, logs show anomalies, or the user wants 
 **Input**: Failing test output, error logs, source code, `component-spec.xml`.
 
 **Output**:
-- Mode A: `skill/artifacts/DEBUG_REPORT.md`
-- Mode B: `skill/artifacts/REFACTOR_REPORT.md`
+- Mode A: `PROJECT_SCAFFOLD/docs/architecture/system/DEBUG_REPORT.md`
+- Mode B: `PROJECT_SCAFFOLD/docs/architecture/system/REFACTOR_REPORT.md`
 
 **VCMF Checkpoints**:
 - Design as Contract: Fixes must not violate `INTERFACE_CONTRACT.md`

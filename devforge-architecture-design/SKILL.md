@@ -29,18 +29,19 @@ This skill uses an orchestrator-worker pattern internally:
 
 - The user has approved a PRD and wants to move to architecture
 - You need to generate interface contracts, test cases, and an XML architecture model
-- Do NOT use if `skill/artifacts/PRD.md` does not exist or has not been approved
+- Do NOT use if `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md` does not exist or has not been approved
 
 ## Precondition Check
 
-Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requirement_analysis_completed` (initial design), `iteration_planning_completed` (architecture refactor within iteration), `evolution_completed` (post-evolution redesign). If `PRD.md` is missing, stop and ask the user to run `devforge-requirement-analysis` first.
-
-## Workflow
+See `skill/tools/precondition-checker.md`. Acceptable phases: `requirement_analysis_completed`, `iteration_planning_completed`, `evolution_completed`.
+- If phase is earlier than `requirement_analysis_completed`, stop and instruct the user to complete `devforge-requirement-analysis` first.
+- If `PRD.md` is missing, stop and instruct the user to complete `devforge-requirement-analysis` first.
 
 ## Language Adaptation
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+
+See `skill/tools/language-adaptation.md`.
+
+## Workflow
 
 1. **Architecture parallel exploration**
    - Read `PRD.md`, `STATE.md`, `DECISION_LOG.md` (full historical context)
@@ -55,7 +56,7 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
 2. **Interface contract design**
    - Based on the "Cross-Module Interactions" section in the PRD, define every interface explicitly
    - For each interface, document: method name, input schema, output schema, error codes, serialization format
-   - Write `skill/artifacts/INTERFACE_CONTRACT.md`
+   - Write `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md`
 
 3. **State ownership mapping**
    - Identify every stateful entity mentioned in the PRD
@@ -69,7 +70,7 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
 
 5. **XML architecture modeling**
    - Read `skill/references/xml-schemas.md` (strict schema definitions for all three XML layers)
-   - Output a strict XML file at `skill/artifacts/architecture.xml` (or `docs/architecture/system/architecture.xml` if in iteration mode)
+   - Output a strict XML file at `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (or `docs/architecture/system/architecture.xml` if in iteration mode)
    - Must validate against the System Level schema defined in `xml-schemas.md`
    - Must contain:
      - `SystemArchitecture` root with `type` attribute and `version` attribute
@@ -78,7 +79,7 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
      - `DataModel` nodes with `Fields` and `CacheStrategy`
      - `StateModel` nodes with `State` (location, owner, consumer, lifecycle)
      - `Security` nodes with `Authentication` and `Encryption`
-   - **Module Level XML templates**: For each `Module` defined in the system XML, auto-generate a template at `skill/artifacts/modules/{module_id}/module-architecture.xml` (or `docs/architecture/modules/{module_id}/`). The template must validate against the Module Level schema in `xml-schemas.md` and include:
+   - **Module Level XML templates**: For each `Module` defined in the system XML, auto-generate a template at `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-architecture.xml` (or `docs/architecture/modules/{module_id}/`). The template must validate against the Module Level schema in `xml-schemas.md` and include:
      - `ParentSystem` reference back to the system XML
      - `Constraints` section pre-populated with the module's system-level interface obligations (Input/Output schemas copied from system `Module/Interface`)
      - `Components` placeholder with at least one example `Component` node showing the expected structure
@@ -116,12 +117,15 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
      - `autoIncrement="true"` → AUTO_INCREMENT (MySQL) or SERIAL (PostgreSQL)
    - Generate `ALTER TABLE` for foreign keys from `Relationships/Relationship`:
      - `ALTER TABLE {source} ADD CONSTRAINT ... FOREIGN KEY ({foreignKey}) REFERENCES {target}({targetField}) ON DELETE {onDelete} ON UPDATE {onUpdate}`
-   - Output `skill/artifacts/schema.sql`
-   - Generate `skill/artifacts/ERD.md` using Mermaid `erDiagram` syntax:
+   - Output `PROJECT_SCAFFOLD/docs/architecture/system/schema.sql`
+   - Generate `PROJECT_SCAFFOLD/docs/architecture/system/ERD.md` using Mermaid `erDiagram` syntax:
      - Each `DataModel` → an entity
      - Each `Relationship` → a relationship line (1:1, 1:N, N:M)
 
 6.1. **Self-validation: schema.sql**
+
+   See `skill/tools/validation-engine.md` for the common checks library.
+
    - Check: Every CREATE TABLE ends with `);`
    - Check: Every ALTER TABLE has valid FOREIGN KEY syntax
    - Check: No `VARCHAR()` without length parameter
@@ -137,10 +141,13 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
      - `responses/200`: Output schema with `$ref`
      - `responses/{code}`: Error codes from `ErrorCodes/Error`
      - `components/schemas`: Reuse `DataModel` definitions; define request/response DTOs for non-DataModel schemas
-   - Output `skill/artifacts/openapi.yaml`
+   - Output `PROJECT_SCAFFOLD/docs/architecture/system/openapi.yaml`
    - Ensure schema names are consistent between `openapi.yaml` and `schema.sql`
 
-7.1. **Self-validation: openapi.yaml**
+7a. **Self-validation: openapi.yaml**
+
+   See `skill/tools/validation-engine.md` for the common checks library.
+
    - Check: All `$ref` values start with `#/components/schemas/`
    - Check: All paths have at least one response defined
    - Check: Schema names in `components/schemas` match DataModel names in architecture.xml
@@ -148,14 +155,14 @@ Before starting, read `skill/artifacts/STATE.md`. Acceptable entry phases: `requ
    - If any check fails, regenerate the failing section before proceeding
 
 8. **Architecture documentation**
-   - Write `skill/artifacts/ARCHITECTURE.md` containing:
+   - Write `PROJECT_SCAFFOLD/docs/architecture/system/ARCHITECTURE.md` containing:
      - Selected architecture and justification
      - Interface contract summary
      - Test case catalog
      - Mock data definitions
      - **Technology Stack Recommendation** (validated per rule below)
 
-8.1. **Technology Stack Validation Rule**：
+8a. **Technology Stack Validation Rule**：
 Before recommending any third-party library, framework, or tool, you MUST perform the following verification in order:
 
 1. **Active Search** (Primary):
@@ -180,18 +187,20 @@ Before recommending any third-party library, framework, or tool, you MUST perfor
      - Document the risk in DECISION_LOG.md
 
 9. **Decision Log update**
-   - Append architecture decisions to `skill/artifacts/DECISION_LOG.md`
+   - Append architecture decisions to `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md`
    - Each entry MUST include:
      - Date and decision ID
      - Evaluation dimensions and score matrix
      - Full reasoning chain (why recommended, why each alternative rejected)
      - Rejected alternatives with specific reasons
 
-10. **State update**
+10. **State Update**
+
+    See `skill/tools/state-updater.md`. This skill transitions phase to `architecture_design_completed`.
+
     - Update `STATE.md`:
       - Append to **Completed Steps**: `[YYYY-MM-DD HH:MM] devforge-architecture-design: Evaluated N patterns. Selected [pattern]. Key reasoning: [summary]`
       - Append to **Known Pitfalls** any risks identified during evaluation
-      - Set `phase: architecture_design_completed`
       - Set DIVE `Design: completed`, `Implement: pending`
 
 11. **Human gate**
@@ -217,12 +226,12 @@ Do NOT proceed to architecture-validation or scaffolding until the user replies 
 
 ## Output Specification
 
-- `skill/artifacts/ARCHITECTURE.md`
-- `skill/artifacts/INTERFACE_CONTRACT.md`
-- `skill/artifacts/architecture.xml` (strict schema)
-- `skill/artifacts/schema.sql` (auto-generated from DataModel)
-- `skill/artifacts/ERD.md` (Mermaid ER diagram)
-- `skill/artifacts/openapi.yaml` (OpenAPI 3.0 spec)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ARCHITECTURE.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/INTERFACE_CONTRACT.md`
+- `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml` (strict schema)
+- `PROJECT_SCAFFOLD/docs/architecture/system/schema.sql` (auto-generated from DataModel)
+- `PROJECT_SCAFFOLD/docs/architecture/system/ERD.md` (Mermaid ER diagram)
+- `PROJECT_SCAFFOLD/docs/architecture/system/openapi.yaml` (OpenAPI 3.0 spec)
 
 ## Red Flags
 

@@ -25,13 +25,13 @@ Perform technical validation of an approved architecture XML: consistency checks
 
 ## Precondition Check
 
-Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `module_design_completed`, `iteration_planning_completed`. If phase is not in this list or `architecture.xml` is missing, stop and instruct the user to complete prior phases first.
+See `skill/tools/precondition-checker.md`. Acceptable phases: `architecture_design_completed`, `architecture_validated`, `module_design_completed`, `iteration_planning_completed`.
+- If phase is earlier than `architecture_design_completed`, stop and instruct the user to complete `devforge-architecture-design` first.
+- If `architecture.xml` is missing, stop and instruct the user to complete `devforge-architecture-design` first.
 
 ## Language Adaptation
 
-- System instructions and constraints in this skill are in English for maximum model compliance
-- User-facing gate messages, summaries, and explanations use the same language as the user's most recent input
-- If the user writes in Chinese, respond in Chinese. If English, respond in English
+See `skill/tools/language-adaptation.md`.
 
 ## Workflow
 
@@ -80,17 +80,20 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
    - If all failures are `non-blocking`:
      - Tell the user: "架构校验发现 {N} 个非阻塞性警告。回复 [FORCE_APPROVE] 跳过警告继续到设计审查阶段，或回复 [RETRY] 修改。"
    - If all pass:
-     - Write `skill/artifacts/VALIDATION_REPORT.md` (or `docs/architecture/system/VALIDATION_REPORT.md`) with full trace and pass summary
+     - Write `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md` (or `docs/architecture/system/VALIDATION_REPORT.md`) with full trace and pass summary
      - **Generate `VALIDATION_DELTA.md`**: Read the previous validation report (if any). Compare current results with previous results. Produce a delta report containing ONLY newly introduced issues or newly resolved issues. Store at `docs/architecture/validation/VALIDATION_DELTA_{YYYYMMDD}.md`. If this is the first validation, the delta report states "Initial validation — all issues are new."
 
 9. **Health-check script generation**
-   - Generate `skill/artifacts/health-check.sh` that checks:
+   - Generate `PROJECT_SCAFFOLD/docs/architecture/validation/health-check.sh` that checks:
      - XML well-formedness
      - All `Coupling` targets exist as `Module` names
      - All `StateModel` entries have required attributes
    - The script should be runnable in a Unix shell
 
 10. **Self-validation: report and script quality**
+
+    See `skill/tools/validation-engine.md` for the common checks library.
+
     - Before finalizing, verify validation outputs with automated checks:
       - **Report completeness**: Confirm `VALIDATION_REPORT.md` contains a PASS/FAIL verdict for every `Module` in `architecture.xml`
       - **Trace log format**: Verify every trace line follows the exact format `[API Response] -> [Case ID] -> ... -> Final Result`
@@ -99,8 +102,10 @@ Read `skill/artifacts/STATE.md`. Acceptable phases: `architecture_design_complet
       - **Delta report accuracy**: Verify `VALIDATION_DELTA.md` only contains issues that differ from the previous validation report (if one exists)
     - If any check fails, regenerate the failing artifact before proceeding
 
-11. **State update**
-    - Update `STATE.md`: `phase: architecture_validated`
+11. **State Update**
+
+    See `skill/tools/state-updater.md`. This skill transitions phase to `architecture_validated`.
+
     - Set DIVE `Verify: completed`
 
 12. **Human gate**
@@ -127,9 +132,9 @@ Do NOT proceed to project-scaffolding if validation failed. If validation passed
 
 ## Output Specification
 
-- `skill/artifacts/VALIDATION_REPORT.md` (or `docs/architecture/system/VALIDATION_REPORT.md`)
-- `skill/artifacts/VALIDATION_DELTA.md` (or `docs/architecture/validation/VALIDATION_DELTA_{YYYYMMDD}.md`)
-- `skill/artifacts/health-check.sh`
+- `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md` (or `docs/architecture/system/VALIDATION_REPORT.md`)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_DELTA.md` (or `docs/architecture/validation/VALIDATION_DELTA_{YYYYMMDD}.md`)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/health-check.sh`
 - Must include the full simulation trace
 - Must clearly state PASS or FAIL per module
 - Must note whether real-LLM validation was run or skipped
