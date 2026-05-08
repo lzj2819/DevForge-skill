@@ -277,8 +277,7 @@ DevForge/
 ├── devforge-security-audit/         # 安全扫描 Skill
 │   └── SKILL.md
 │
-├── context-compression/             # 内部工具: 上下文压缩
-│   └── SKILL.md
+├── skill/tools/context-compression.md  # 内部工具: 上下文压缩（由其他技能自动调用）
 │
 └── extensions/                      # 领域扩展（动态加载）
     ├── ai-agent-design/

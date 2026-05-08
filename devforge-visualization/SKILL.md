@@ -11,11 +11,13 @@ Generate visual architecture diagrams from an approved `architecture.xml`. This 
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Diagrams must match `architecture.xml` exactly; no invented modules or interfaces |
-| Interface as Boundary | Sequence diagram messages must match `Interface` definitions |
-| Reality as Baseline | ER diagram relationships must have `Relationships` node or `Coupling` support |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Diagrams must match `architecture.xml` exactly; no invented modules or interfaces | Inherited from architecture-design |
+| Interface as Boundary | Sequence diagram messages must match `Interface` definitions | Inherited from architecture-design |
+| Reality as Baseline | ER diagram relationships must have `Relationships` node or `Coupling` support | Inherited from architecture-design |
+| State as Responsibility | Data flow diagrams must show state ownership (which module writes vs reads) per `StateModel` | Inherited from architecture-design |
+| XML as Authority | All diagram elements must be verifiable against `architecture.xml` nodes by unique ID | Inherited from architecture-design, refined |
 
 ## When to Use
 

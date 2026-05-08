@@ -18,12 +18,13 @@ This skill uses an orchestrator-worker pattern internally:
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Architecture must be traceable back to PRD requirements; no invented requirements |
-| Interface as Boundary | Every cross-module call must have explicit Input/Output types and error codes in INTERFACE_CONTRACT.md |
-| Reality as Baseline | Test cases must cover happy path, abnormal path, and NFR scenarios |
-| State as Responsibility | XML `<StateModel>` must answer: where stored, who writes, who reads, lifecycle |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Architecture must be traceable back to PRD requirements; no invented requirements | Inherited from requirement-analysis, refined |
+| Interface as Boundary | Every cross-module call must have explicit Input/Output types and error codes in INTERFACE_CONTRACT.md | Inherited from requirement-analysis, refined |
+| Reality as Baseline | Test cases must cover happy path, abnormal path, and NFR scenarios | New |
+| State as Responsibility | XML `<StateModel>` must answer: where stored, who writes, who reads, lifecycle | Inherited from requirement-analysis, refined |
+| XML as Authority | Architecture XML must validate against system-level schema with DecisionTrace | New |
 
 ## When to Use
 

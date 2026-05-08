@@ -11,12 +11,13 @@ Generate production-grade infrastructure as code (IaC) from an approved architec
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Terraform resources must map 1:1 to `Module` nodes; no phantom resources |
-| Interface as Boundary | K8s service ports must match `Interface` definitions |
-| Reality as Baseline | Monitoring metrics must be collectable; no theoretical metrics |
-| State as Responsibility | Database and cache persistence policies must match `StateModel` |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Terraform resources must map 1:1 to `Module` nodes; no phantom resources | Inherited from architecture-design, refined |
+| Interface as Boundary | K8s service ports must match `Interface` definitions | Inherited from architecture-design, refined |
+| Reality as Baseline | Monitoring metrics must be collectable; no theoretical metrics | Inherited from architecture-design |
+| State as Responsibility | Database and cache persistence policies must match `StateModel` | Inherited from architecture-design, refined |
+| XML as Authority | Every generated infrastructure resource must be traceable to a `Module` or `StateModel` node in `architecture.xml` | Inherited from architecture-design, refined |
 
 ## When to Use
 

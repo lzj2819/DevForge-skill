@@ -11,12 +11,13 @@ Perform technical validation of an approved architecture XML: consistency checks
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Verify that XML modules map back to PRD requirements |
-| Interface as Boundary | Verify that every `Coupling` in XML matches `INTERFACE_CONTRACT.md` |
-| Reality as Baseline | Run real-LLM validation on semantic-sensitive points (security judgment, format constraint, error translation, tool selection); degrade to mock+consistency if no API key |
-| State as Responsibility | Verify that `StateModel` lifecycle definitions are internally consistent |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Verify that XML modules map back to PRD requirements | Inherited from architecture-design |
+| Interface as Boundary | Verify that every `Coupling` in XML matches `INTERFACE_CONTRACT.md` | Inherited from architecture-design |
+| Reality as Baseline | Run real-LLM validation on semantic-sensitive points (security judgment, format constraint, error translation, tool selection); degrade to mock+consistency if no API key | Inherited from architecture-design |
+| State as Responsibility | Verify that `StateModel` lifecycle definitions are internally consistent | Inherited from architecture-design |
+| XML as Authority | Verify XML well-formedness, schema compliance, and cross-reference integrity | Inherited from architecture-design, refined |
 
 ## When to Use
 

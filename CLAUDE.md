@@ -93,7 +93,7 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 | 9 | `devforge-ops-ready/` | `[OPS]` | — |
 | 10 | `devforge-debug-assistant/` | `[DEBUG]` or test failure | — |
 
-Plus: `context-compression/` (utility), `devforge-security-audit/` (security scan), `extensions/` (domain-specific overlays: ai-agent-design, data-pipeline-design, mobile-app-design).
+Plus: `skill/tools/context-compression.md` (utility tool — invoked by other skills), `devforge-security-audit/` (security scan), `extensions/` (domain-specific overlays: ai-agent-design, data-pipeline-design, mobile-app-design).
 
 **Key flow rules:**
 - Stages 3a and 3b both run by default. Stage 3c (security-audit) is optional but recommended. User can `[SKIP_REVIEW]` or `[SKIP_VALIDATION]`.

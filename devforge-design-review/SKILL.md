@@ -14,12 +14,13 @@ For technical consistency checks, use `devforge-architecture-validation` instead
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Verify that architecture decisions trace back to PRD requirements; flag orphaned assumptions |
-| Interface as Boundary | Verify that interfaces handle edge cases and failure modes, not just happy path |
-| Reality as Baseline | Verify that mock data covers abnormal paths and NFR stress scenarios |
-| State as Responsibility | Verify that every StateModel has complete lifecycle (create, read, update, delete, cleanup) |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Verify that architecture decisions trace back to PRD requirements; flag orphaned assumptions | Inherited from architecture-design |
+| Interface as Boundary | Verify that interfaces handle edge cases and failure modes, not just happy path | Inherited from architecture-design, refined |
+| Reality as Baseline | Verify that mock data covers abnormal paths and NFR stress scenarios | New |
+| State as Responsibility | Verify that every StateModel has complete lifecycle (create, read, update, delete, cleanup) | Inherited from architecture-design |
+| XML as Authority | Verify XML artifacts are complete, consistent, and free of speculative elements | Inherited from architecture-design |
 
 ## When to Use
 

@@ -11,12 +11,13 @@ Transform a raw product idea into a structured, reviewable PRD. This skill combi
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | PRD must define closed-loop success metrics and scope boundaries |
-| Interface as Boundary | Identify and list all cross-module interaction points in the PRD |
-| Reality as Baseline | Acceptance criteria must be observable and testable |
-| State as Responsibility | Document who owns each business state mentioned in user stories |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | PRD must define closed-loop success metrics and scope boundaries | New |
+| Interface as Boundary | Identify and list all cross-module interaction points in the PRD | New |
+| Reality as Baseline | Acceptance criteria must be observable and testable | New |
+| State as Responsibility | Document who owns each business state mentioned in user stories | New |
+| XML as Authority | PRD must reference XML schema locations for downstream architecture | New |
 
 ## When to Use
 

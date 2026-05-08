@@ -1,15 +1,10 @@
----
-name: context-compression
-description: Internal utility skill used by other DevForges to compress session context into a persistent digest. NOT for direct user invocation — called automatically by skills after completing their workflow.
----
-
 # Context Compression
 
-## Overview
+## Purpose
 
-This skill extracts the essential decisions, risks, and state from a completed skill execution and compresses them into a `Compressed Context` digest stored in `STATE.md`. The purpose is to enable fast session recovery: a new session can read the compressed context and immediately understand the project's current state without parsing all historical artifacts.
+Extract the essential decisions, risks, and state from a completed skill execution and compress them into a `Compressed Context` digest stored in `STATE.md`. This enables fast session recovery: a new session can read the compressed context and immediately understand the project's current state without parsing all historical artifacts.
 
-## When to Use
+## When to Invoke
 
 - **Automatically invoked** by `devforge-requirement-analysis`, `devforge-architecture-design`, `devforge-architecture-validation`, `devforge-design-review`, `devforge-project-scaffolding`, `devforge-module-design`, and `devforge-iteration-planning` as their final step before the human gate.
 - Do NOT invoke directly unless the user explicitly asks to "compress context" or "summarize project state".
@@ -17,13 +12,13 @@ This skill extracts the essential decisions, risks, and state from a completed s
 ## Input
 
 - `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` (current state, including existing Compressed Context if any)
-- The primary output artifact of the skill that just completed (e.g., `PROJECT_SCAFFOLD/docs/architecture/system/PRD.md`, `PROJECT_SCAFFOLD/docs/architecture/system/architecture.xml`, `PROJECT_SCAFFOLD/docs/architecture/validation/VALIDATION_REPORT.md`)
+- The primary output artifact of the skill that just completed (e.g., `PRD.md`, `architecture.xml`, `VALIDATION_REPORT.md`)
 - `PROJECT_SCAFFOLD/docs/architecture/system/DECISION_LOG.md` (recent entries)
 
 ## Workflow
 
 1. **Read existing compressed context**
-   - If `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` has a `Compressed Context` section, read it
+   - If `STATE.md` has a `Compressed Context` section, read it
    - If missing, start fresh
 
 2. **Extract key facts from the completed skill**
@@ -34,7 +29,7 @@ This skill extracts the essential decisions, risks, and state from a completed s
 
 3. **Generate digest**
    - Format: 200 words maximum, structured as bullet points
-   - Each bullet follows: `[DecisionID]: [What] → [Why] → [Risk]`
+   - Each bullet follows: `[DecisionID]: [What] -> [Why] -> [Risk]`
    - Include: project name, selected pattern, module registry summary, current iteration
    - Avoid: full sentences, redundant details, file paths, code snippets
 
@@ -44,11 +39,11 @@ This skill extracts the essential decisions, risks, and state from a completed s
    - Do NOT modify Immutable Goal, Completed Steps, or Known Pitfalls
 
 5. **Update DecisionDigest list**
-   - In `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`, maintain a `DecisionDigest` list (if not present, create it)
+   - In `STATE.md`, maintain a `DecisionDigest` list (if not present, create it)
    - Append each new decision as: `[YYYY-MM-DD] [DecisionID]: [One-line summary]`
    - Keep only the last 20 entries; truncate older ones
 
-## Output Specification
+## Output
 
 - Updated `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` with refreshed `Compressed Context`
 - Updated `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` `Artifact Index`
@@ -70,5 +65,5 @@ This skill extracts the essential decisions, risks, and state from a completed s
 
 - Do NOT exceed 200 words in the compressed context
 - Do NOT include file paths or code snippets
-- Do NOT delete older compressed contexts — overwrite the section
+- Do NOT delete older compressed contexts -- overwrite the section
 - Do NOT compress if the skill execution failed or was aborted

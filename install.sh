@@ -100,7 +100,6 @@ remove_old_symlinks() {
         devforge-ops-ready
         devforge-debug-assistant
         devforge-security-audit
-        context-compression
         ai-agent-design
         data-pipeline-design
         mobile-app-design
@@ -130,7 +129,6 @@ create_symlinks() {
         devforge-ops-ready
         devforge-debug-assistant
         devforge-security-audit
-        context-compression
     )
 
     local count=0

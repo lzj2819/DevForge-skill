@@ -11,13 +11,13 @@ Generate hard deliverables by grounding all historical conclusions into runnable
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Every generated infrastructure file must be traceable to PRD or Architecture artifacts |
-| Interface as Boundary | CI/CD pipeline must include architecture consistency check job |
-| Reality as Baseline | Tests directory structure must support both mock tests and real-LLM tests with `skipif` mechanism |
-| State as Responsibility | Generated state management code (infrastructure layer only) must match `StateModel` ownership in XML |
-| XML as Authority | `docs/architecture/INDEX.md` must correctly index all XML artifacts; CI enforces XML consistency |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Every generated infrastructure file must be traceable to PRD or Architecture artifacts | Inherited from architecture-design, refined |
+| Interface as Boundary | CI/CD pipeline must include architecture consistency check job | Inherited from architecture-design, refined |
+| Reality as Baseline | Tests directory structure must support both mock tests and real-LLM tests with `skipif` mechanism | Inherited from architecture-design, refined |
+| State as Responsibility | Generated state management code (infrastructure layer only) must match `StateModel` ownership in XML | Inherited from architecture-design, refined |
+| XML as Authority | `docs/architecture/INDEX.md` must correctly index all XML artifacts; CI enforces XML consistency | Inherited from architecture-design, refined |
 
 ## When to Use
 

@@ -90,7 +90,6 @@ function Remove-OldLinks {
         "devforge-ops-ready"
         "devforge-debug-assistant"
         "devforge-security-audit"
-        "context-compression"
         "ai-agent-design"
         "data-pipeline-design"
         "mobile-app-design"
@@ -123,7 +122,6 @@ function New-SkillLinks {
         "devforge-ops-ready"
         "devforge-debug-assistant"
         "devforge-security-audit"
-        "context-compression"
     )
 
     $count = 0

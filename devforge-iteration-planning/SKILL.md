@@ -13,12 +13,13 @@ This skill performs impact analysis, writes an incremental PRD, updates architec
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | New requirements must trace to existing PRD scope or be explicitly flagged as out-of-scope escalation |
-| Interface as Boundary | Any interface change must be versioned; old interfaces remain compatible or have explicit migration path |
-| Reality as Baseline | Impact analysis must identify every module affected by the new requirement; no hidden dependencies |
-| State as Responsibility | New or modified state entries must declare their relationship to existing state (independent, derived, or replacement) |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | New requirements must trace to existing PRD scope or be explicitly flagged as out-of-scope escalation | Inherited from architecture-design |
+| Interface as Boundary | Any interface change must be versioned; old interfaces remain compatible or have explicit migration path | Inherited from architecture-design |
+| Reality as Baseline | Impact analysis must identify every module affected by the new requirement; no hidden dependencies | Inherited from architecture-design |
+| State as Responsibility | New or modified state entries must declare their relationship to existing state (independent, derived, or replacement) | Inherited from architecture-design |
+| XML as Authority | Incremental architecture changes must propagate through all three XML layers (system → module → component) | Inherited from architecture-design |
 
 ## When to Use
 

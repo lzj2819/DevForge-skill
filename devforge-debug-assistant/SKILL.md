@@ -7,24 +7,25 @@ description: Use when tests are failing, logs show anomalies, or the user wants 
 
 ## Overview
 
-Analyze failing tests, error logs, or existing code to provide actionable bug fixes and refactoring suggestions. This skill bridges the gap between "code exists" and "code is correct and maintainable."
+Analyze failing tests, error logs, production incidents, or existing code to provide actionable bug fixes, refactoring suggestions, and incident reports. Supports three modes: bug diagnosis (Mode A), refactoring (Mode B), and production issue diagnosis (Mode C).
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Bug fixes must not violate `INTERFACE_CONTRACT.md` or `component-spec.xml` |
-| Interface as Boundary | Refactoring must preserve all public interfaces unless explicitly approved |
-| Reality as Baseline | Diagnosis must be based on actual test output / logs, not speculation |
-| State as Responsibility | Bug fixes involving state must respect `StateModel` ownership |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Bug fixes must not violate `INTERFACE_CONTRACT.md` or `component-spec.xml` | New |
+| Interface as Boundary | Refactoring must preserve all public interfaces unless explicitly approved | New |
+| Reality as Baseline | Diagnosis must be based on actual test output / logs, not speculation | New |
+| State as Responsibility | Bug fixes involving state must respect `StateModel` ownership | New |
+| XML as Authority | Fixes must update `component-spec.xml` if the XML spec itself is found to be the source of the bug | New |
 
 ## When to Use
 
-- Tests are failing and the user needs diagnosis + fix
-- Error logs contain exceptions or anomalies
-- The user wants to improve code quality (refactoring)
-- The user types `[DEBUG]` or says "fix this bug" / "refactor this"
-- Do NOT use if no code or tests exist yet (use `devforge-project-scaffolding` first)
+- **Mode A (Bug Diagnosis)**: Tests are failing and the user needs diagnosis + fix
+- **Mode B (Refactoring)**: The user wants to improve code quality
+- **Mode C (Production Issue Diagnosis)**: Production logs show anomalies, alerts are firing, or user reports "production issue" / "incident" / "outage"
+- The user types `[DEBUG]` or says "fix this bug" / "refactor this" / "investigate incident"
+- Do NOT use if no code exists yet (use `devforge-project-scaffolding` first)
 
 ## Precondition Check
 
@@ -118,17 +119,57 @@ See `skill/tools/language-adaptation.md`.
      - Risk assessment per refactoring
      - Suggested execution order (low risk first)
 
+### Mode C: Production Issue Diagnosis
+
+1. **Collect production evidence**
+   - Read production logs (error logs, access logs, application logs)
+   - Read monitoring metrics (CPU, memory, latency, error rate from Prometheus/Grafana/Datadog)
+   - Read alert notifications (PagerDuty, OpsGenie, etc.)
+   - Read distributed traces (Jaeger, Zipkin, AWS X-Ray) if available
+   - Read `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md` for module registry and known pitfalls
+   - **Note**: Test output is NOT required for Mode C — production logs and metrics are the primary input
+
+2. **Correlate symptoms with system architecture**
+   - Map log anomalies to specific modules/components using `component-spec.xml`
+   - Identify which module's interfaces are involved in the error path
+   - Check if the issue matches any known pitfalls in `STATE.md`
+   - Correlate timestamp across logs, metrics, and traces
+
+3. **Root cause analysis**
+   - Production-specific categories:
+     - Resource exhaustion (OOM, connection pool depletion, thread starvation)
+     - Cascade failure (downstream service timeout propagating upstream)
+     - Deployment-related (config mismatch, rolling update issue, feature flag)
+     - Data corruption (inconsistent state, migration error)
+     - External dependency failure (third-party API, cloud service)
+     - Traffic pattern anomaly (DDoS, thundering herd, unexpected spike)
+   - Use the 5 Whys method to trace from symptom to root cause
+
+4. **Generate production incident report**
+   - Output: `PROJECT_SCAFFOLD/docs/architecture/validation/PRODUCTION_INCIDENT_REPORT.md`
+   - Contents:
+     - Incident summary (what, when, impact)
+     - Symptom timeline (chronological log of events)
+     - Root cause (with evidence references)
+     - Affected components and modules
+     - Immediate mitigation (if any)
+     - Long-term fix proposal
+     - Prevention recommendations
+
 <HARD-GATE>
-Do NOT apply refactoring changes or close a debug session until the user explicitly approves the fix strategy. In Mode A (Bug Diagnosis), the root cause analysis must be confirmed before generating the fix. In Mode B (Refactoring), the refactoring plan must be approved before applying changes.
+Do NOT apply refactoring changes or close a debug session until the user explicitly approves the fix strategy. In Mode A (Bug Diagnosis), the root cause analysis must be confirmed before generating the fix. In Mode B (Refactoring), the refactoring plan must be approved before applying changes. In Mode C (Production Issue Diagnosis), the incident timeline and root cause must be confirmed before proposing fixes.
 </HARD-GATE>
 
 5. **Human gate**
-   - Present summary: "调试/重构报告已生成。"
+   - Present summary based on active mode:
+     - Mode A: "Bug 诊断报告已生成。"
+     - Mode B: "重构报告已生成。"
+     - Mode C: "生产事故分析报告已生成。"
    - Then list all available commands:
      ```
      可用命令：
-     - [APPROVE FIX] — 应用修复方案
-     - [APPROVE REFACTOR] — 应用重构方案
+     - [APPROVE FIX] — 应用修复方案（Mode A/C）
+     - [APPROVE REFACTOR] — 应用重构方案（Mode B）
      - [SPECIFIC {issue_id}] — 只处理特定问题
      - [PAUSE] — 暂停当前阶段，保留上下文
      - [ROLLBACK {step_id}] — 回滚到指定步骤重新执行
@@ -141,12 +182,14 @@ Do NOT apply refactoring changes or close a debug session until the user explici
 
 ## Output Specification
 
-- `PROJECT_SCAFFOLD/docs/architecture/validation/DEBUG_REPORT.md` (for bug diagnosis mode)
-- `PROJECT_SCAFFOLD/docs/architecture/validation/REFACTOR_REPORT.md` (for refactoring mode)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/DEBUG_REPORT.md` (for Mode A: bug diagnosis)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/REFACTOR_REPORT.md` (for Mode B: refactoring)
+- `PROJECT_SCAFFOLD/docs/architecture/validation/PRODUCTION_INCIDENT_REPORT.md` (for Mode C: production issue diagnosis)
 
 ## Red Flags
 
 - Do NOT propose fixes that violate `INTERFACE_CONTRACT.md` without explicit user approval
 - Do NOT refactor without preserving public interface contracts
-- Do NOT diagnose based on speculation; always reference actual test output or logs
+- Do NOT diagnose based on speculation; always reference actual test output, logs, or monitoring metrics
+- Do NOT ignore production context in Mode C; correlate logs with architecture and known pitfalls
 - Do NOT skip the human gate before applying changes

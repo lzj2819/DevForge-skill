@@ -11,12 +11,13 @@ Execute all generated tests (unit, integration, end-to-end), analyze results, ge
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Every failing test must map back to a PRD requirement ID |
-| Interface as Boundary | Test input/output must match `component-spec.xml` signatures |
-| Reality as Baseline | Coverage report must be generated and compared against 80% threshold |
-| State as Responsibility | State lifecycle tests must verify `StateModel` ownership |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Every failing test must map back to a PRD requirement ID | Inherited from module-design |
+| Interface as Boundary | Test input/output must match `component-spec.xml` signatures | Inherited from module-design |
+| Reality as Baseline | Coverage report must be generated and compared against 80% threshold | Inherited from module-design, refined |
+| State as Responsibility | State lifecycle tests must verify `StateModel` ownership | Inherited from module-design |
+| XML as Authority | Test assertions must verify code behavior against `component-spec.xml` function contracts | Inherited from module-design |
 
 ## When to Use
 

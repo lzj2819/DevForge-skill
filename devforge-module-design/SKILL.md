@@ -13,13 +13,13 @@ This is the "same thinker" facing the module-level view of the same problem.
 
 ## VCMF Checkpoints
 
-| Principle | Checkpoint in this Skill |
-|-----------|--------------------------|
-| Design as Contract | Module design must trace back to the system-level PRD and architecture; generated code skeletons must trace back to `component-spec.xml` |
-| Interface as Boundary | Every cross-component call must have explicit Input/Output types and error codes in `module-interface-contract.md`; generated code signatures must match |
-| Reality as Baseline | Module-level test cases must cover happy path, abnormal path, and state lifecycle edge cases |
-| State as Responsibility | `ModuleStateModel` must answer: where stored, which component writes, which components read, lifecycle |
-| XML as Authority | Generated code skeletons must strictly match `component-spec.xml` signatures and error handling |
+| Principle | Checkpoint in this Skill | Inherited from |
+|-----------|--------------------------|----------------|
+| Design as Contract | Module design must trace back to the system-level PRD and architecture; generated code skeletons must trace back to `component-spec.xml` | Inherited from architecture-design, refined |
+| Interface as Boundary | Every cross-component call must have explicit Input/Output types and error codes in `module-interface-contract.md`; generated code signatures must match | Inherited from architecture-design, refined |
+| Reality as Baseline | Module-level test cases must cover happy path, abnormal path, and state lifecycle edge cases | Inherited from requirement-analysis |
+| State as Responsibility | `ModuleStateModel` must answer: where stored, which component writes, which components read, lifecycle | Inherited from architecture-design, refined |
+| XML as Authority | Generated code skeletons must strictly match `component-spec.xml` signatures and error handling | Inherited from architecture-design, refined |
 
 ## When to Use
 
