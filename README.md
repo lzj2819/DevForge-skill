@@ -2,7 +2,7 @@
 
 > 基于 **VCMF**（Vibe Coding Maturity Framework）与 **DIVE**（Design-Implement-Verify-Evolve）方法论的 AI 驱动软件开发生命周期工具链
 
-[GitHub 仓库](https://github.com/lzj2819/DevForge) | [License: MIT](LICENSE)
+[GitHub 仓库](https://github.com/lzj2819/DevForge-skill) | [License: MIT](LICENSE)
 
 ---
 
@@ -23,13 +23,13 @@
 **macOS / Linux:**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/lzj2819/DevForge/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/lzj2819/DevForge-skill/main/install.sh | bash
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lzj2819/DevForge/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lzj2819/DevForge-skill/main/install.ps1" -OutFile "install.ps1"; .\install.ps1
 ```
 
 安装脚本会：
@@ -52,7 +52,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/lzj2819/DevForge/main/
 
 ```bash
 # 1. 克隆仓库（只需一次）
-git clone https://github.com/lzj2819/DevForge.git ~/.claude/devforge-skills
+git clone https://github.com/lzj2819/DevForge-skill.git ~/.claude/devforge-skills
 
 # 2. 创建符号链接（macOS/Linux）
 ln -s ~/.claude/devforge-skills/devforge-requirement-analysis ~/.claude/skills/

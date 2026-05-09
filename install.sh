@@ -3,7 +3,7 @@
 # DevForge SDLC Skill Chain — One-Click Installer (macOS/Linux)
 #
 # Usage:
-#   curl -sSL https://raw.githubusercontent.com/lzj2819/DevForge/main/install.sh | bash
+#   curl -sSL https://raw.githubusercontent.com/lzj2819/DevForge-skill/main/install.sh | bash
 #   Or locally: ./install.sh
 #
 # This installer uses a symlink-based approach:
@@ -14,7 +14,7 @@
 
 set -euo pipefail
 
-REPO_URL="${DEVFORGE_REPO_URL:-https://github.com/lzj2819/DevForge.git}"
+REPO_URL="${DEVFORGE_REPO_URL:-https://github.com/lzj2819/DevForge-skill.git}"
 INSTALL_DIR="${HOME}/.claude/devforge-skills"
 SKILLS_DIR="${HOME}/.claude/skills"
 
@@ -213,7 +213,7 @@ print_next_steps() {
     echo "🗑️  To uninstall:"
     echo "   ${INSTALL_DIR}/uninstall.sh"
     echo ""
-    echo "📖 Documentation: https://github.com/lzj2819/DevForge"
+    echo "📖 Documentation: https://github.com/lzj2819/DevForge-skill"
     echo ""
 }
 
