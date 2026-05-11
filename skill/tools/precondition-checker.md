@@ -39,3 +39,25 @@ Each skill copies this template and fills in:
 | ops-ready | `test_execution_completed` | `test_execution_completed` | `STATE.md` |
 | debug-assistant | `scaffolding_completed`+ | `scaffolding_completed` | `STATE.md` |
 | sdlc-security-audit | `design_review_completed` | `design_review_completed` | `architecture.xml` |
+| devforge-threat-modeling | `design_review_completed`, `architecture_validated` | `design_review_completed` | `architecture.xml` |
+| devforge-data-pipeline | `architecture_design_completed`, `scaffolding_completed` | `architecture_design_completed` | `architecture.xml` |
+
+## Phase List
+
+The following phases are defined by the skill chain:
+
+- `initial` — before any skill runs
+- `requirement_analysis_completed` — after `devforge-requirement-analysis` finishes
+- `architecture_design_completed` — after `devforge-architecture-design` finishes
+- `architecture_validated` — after `devforge-architecture-validation` finishes
+- `design_review_completed` — after `devforge-design-review` finishes
+- `security_audit_completed` — after `devforge-security-audit` finishes
+- `threat_modeling_completed` — after `devforge-threat-modeling` finishes
+- `data_pipeline_completed` — after `devforge-data-pipeline` finishes
+- `scaffolding_completed` — after `devforge-project-scaffolding` finishes
+- `module_design_completed` — after `devforge-module-design` finishes
+- `test_execution_completed` — after `devforge-test-execution` finishes
+- `iteration_planning_completed` — after `devforge-iteration-planning` finishes
+- `visualization_completed` — after `devforge-visualization` finishes
+- `ops_ready_completed` — after `devforge-ops-ready` finishes
+- `evolution_completed` — after `devforge-iteration-planning` finishes with breaking changes

@@ -1,12 +1,12 @@
 ---
-title: DevForge State v1.3
-description: Template for the file-based state used by the DevForge chain (12 sections, v1.3)
+title: DevForge State v1.4
+description: Template for the file-based state used by the DevForge chain (16 sections, v1.4)
 ---
 
 # DevForge State
 
 > **File path**: `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`
-> **Version**: v1.3 — 12 sections including Quality Gates, Error Log, and Intervention Log
+> **Version**: v1.4 — 16 sections including Quality Gates, Error Log, Intervention Log, Characteristic Tags, Loaded Extensions, Security Posture, and Data Pipeline Status
 
 ## 1. Immutable Goal (Never Overwritten)
 > Read at the start of every skill invocation to prevent drift.
@@ -155,12 +155,46 @@ iteration_history:
 | Context Protocol | references/context-management-protocol.md | 2026-04-29 | Layered summary + artifact loading rules |
 | Validation Scripts Manifest | references/validation-scripts-manifest.md | 2026-04-29 | Script capability mapping + known gaps |
 
-## 10. Known Pitfalls & Risks (Append-Only)
+## 10. Characteristic Tags (Updated by requirement-analysis)
+
+Automatically extracted from PRD during requirement-analysis.
+Format: `[tag_name]`
+
+- [ ] `[microservice]`
+- [ ] `[data-pipeline]`
+- [ ] `[high-security]`
+- [ ] `[ui-heavy]`
+- [ ] `[performance-critical]`
+- [ ] `[high-observability]`
+
+## 11. Loaded Extensions (Updated by architecture-design)
+
+Track which extensions have been loaded and when.
+Format: `extension_name @ YYYY-MM-DD`
+
+- [ ] `ai-agent-design @ `
+- [ ] `frontend-ui-system-design @ `
+- [ ] `observability-engineering @ `
+- [ ] `performance-testing @ `
+
+## 12. Security Posture (Updated by threat-modeling and security-audit)
+
+- Threat Modeling Status: `not_started` / `in_progress` / `completed`
+- Security Audit Status: `not_started` / `passed` / `failed`
+- Last Security Review Date: 
+
+## 13. Data Pipeline Status (Updated by data-pipeline)
+
+- Data Flow Modeling: `not_started` / `in_progress` / `completed`
+- ETL DAG Generation: `not_started` / `generated` / `validated`
+- Data Quality Rules: `not_started` / `defined` / `verified`
+
+## 14. Known Pitfalls & Risks (Append-Only)
 > Every skill MUST append risks discovered during its unfold.
 
 - [YYYY-MM-DD] Risk: [description]. Mitigation: [strategy].
 
-## 11. Error Log (Append-Only)
+## 15. Error Log (Append-Only)
 > Every error reported via error-tracing MUST be logged here.
 
 ```yaml
@@ -179,7 +213,7 @@ ErrorLog:
     fixCommit: "abc1234"
 ```
 
-## 12. Intervention Log (Append-Only)
+## 16. Intervention Log (Append-Only)
 > Every human intervention via intervention-checkpoint MUST be logged here.
 
 ```yaml

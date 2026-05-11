@@ -42,6 +42,13 @@ Read → Compute Diff → Update Delta → Preserve Manual
 | `component-spec.xml` | Conservative update | 已有 Function 不覆盖，只新增缺失的 Function |
 | `INTERFACE_CONTRACT.md` | Merge-update | 新增接口追加到末尾，已有接口更新版本号 |
 | `PROJECT_SCAFFOLD/` | Overlay | 新增文件直接写入，已有非 `auto-generated` 标记文件跳过 |
+| `security.xml` | Merge-update | 安全策略节点更新，已有威胁模型仅追加新威胁 |
+| `THREAT_MODEL_REPORT.md` | Append-only | 新威胁分析追加到末尾 |
+| `dataflow.xml` | Merge-update | 数据流节点更新，保留已有转换逻辑 |
+| `schema-olap.sql` | Conservative update | 新增表/字段追加，已有 DDL 不修改 |
+| `observability/slo-definitions.yaml` | Selective update | SLO 定义覆盖更新，历史版本保留 |
+| `observability/alerting-rules.yaml` | Merge-update | 新增规则追加，已有规则更新阈值 |
+| `performance/baseline-config.yaml` | Selective update | 基准配置覆盖更新，历史基准保留 |
 
 ### 2.2 各模式详细说明
 

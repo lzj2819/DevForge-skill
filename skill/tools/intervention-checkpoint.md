@@ -25,6 +25,16 @@
 | `[SKIP]` | `[SKIP]` | 跳过当前可选步骤，直接进入下一步 | 当前阶段为可选阶段（如可视化、运维配置），开发者认为无需执行 |
 | `[INJECT {context}]` | `[INJECT 用户偏好使用 PostgreSQL]` | 向当前 Skill 补充额外上下文信息 | 发现 AI 遗漏了重要信息，或需求在对话中发生了变化 |
 
+### 2.2 v1.4 扩展命令
+
+| 命令 | 语法 | 作用 | 适用场景 |
+|------|------|------|----------|
+| `[THREAT_MODEL]` | `[THREAT_MODEL]` | 触发 devforge-threat-modeling skill | 设计完成后需要进行系统级威胁建模 |
+| `[DATA_PIPELINE]` | `[DATA_PIPELINE]` | 触发 devforge-data-pipeline skill | 数据项目需要生成 ETL DAG 和维度建模 |
+| `[SLO]` | `[SLO]` | 触发 observability-engineering extension | 需要定义 SLO/SLI 和告警规则 |
+| `[PERFORMANCE_TEST]` | `[PERFORMANCE_TEST]` | 触发 performance-testing extension | 需要进行性能基准测试和回归检测 |
+| `[FRONTEND_DESIGN]` | `[FRONTEND_DESIGN]` | 触发 frontend-ui-system-design extension | 前端项目需要组件库和性能预算设计 |
+
 ### 2.1 命令详细说明
 
 #### `[PAUSE]` — 暂停
