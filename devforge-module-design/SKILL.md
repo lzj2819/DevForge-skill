@@ -94,6 +94,14 @@ See `skill/tools/language-adaptation.md`.
      - Include `Metadata` placeholder (Language, Framework, FilePath)
      - Include `Functions` placeholder
      - Include `Dependencies` placeholder
+   - For microservice modules (`architecture.xml/@type="microservice"`), add `Resilience` node to each component's `component-spec.xml`:
+     ```xml
+     <Resilience>
+       <CircuitBreaker threshold="50%" window="10s" timeout="30s"/>
+       <RateLimiter maxRequests="1000" window="1m"/>
+       <Retry maxAttempts="3" backoff="exponential" initialDelay="100ms"/>
+     </Resilience>
+     ```
 
 7. **Module-level test case design**
    - Based on module-level user stories and acceptance criteria, generate test cases:
@@ -142,6 +150,29 @@ See `skill/tools/language-adaptation.md`.
      # Source: component-spec.xml::{component_id}
      # Status: {placeholder/minimal-implemented}
      ```
+
+   8a. **Microservice artifact generation** (only when `architecture.xml/@type="microservice"`)
+      - Generate `grpc/{module_id}.proto` from `component-spec.xml` Interface definitions:
+        - Each `ComponentSpec/Functions/Function` → `rpc {FunctionName} (InputType) returns (OutputType);`
+        - Include error code mappings in proto comments
+      - Generate `config/resilience.yaml` from component `Resilience` nodes:
+        ```yaml
+        resilience:
+          circuit_breaker:
+            failure_rate_threshold: 50
+            slow_call_rate_threshold: 80
+            slow_call_duration_threshold: 1s
+            wait_duration_in_open_state: 30s
+          rate_limiter:
+            limit_for_period: 1000
+            limit_refresh_period: 1m
+          retry:
+            max_attempts: 3
+            wait_duration: 100ms
+            exponential_backoff_multiplier: 2
+        ```
+      - If module participates in distributed transactions (indicated by `SagaOrchestration` in architecture.xml):
+        - Generate `config/saga-{module_id}.yaml` defining the Saga state machine
 
 9. **Module documentation**
    - Write `module-prd.md` containing:

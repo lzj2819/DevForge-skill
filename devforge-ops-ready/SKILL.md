@@ -125,6 +125,24 @@ See `skill/tools/language-adaptation.md`.
    - Generate `promotion-policy.yaml` defining the criteria and thresholds
    - Generate `rollback-policy.yaml` defining emergency rollback triggers
 
+7a. **Service Mesh and observability infrastructure** (only when `architecture.xml/@type="microservice"`)
+    - Generate `infrastructure/istio/`:
+      - `virtualservices.yaml`: One VirtualService per Module, routes derived from `Module/Interface`
+      - `destinationrules.yaml`: Subsets per Module version, mTLS enforcement
+      - `gateway.yaml`: Ingress gateway with TLS termination
+      - Default policies: mTLS strict, timeout 30s, retry 3 attempts
+    - Generate `infrastructure/otel/`:
+      - `otel-collector-config.yaml`: Receivers (OTLP, Prometheus), processors (batch), exporters (Jaeger, Prometheus)
+      - `jaeger-deployment.yaml`: All-in-one Jaeger for dev/staging, production Jaeger with Elasticsearch backend
+      - Sidecar injection annotations per Module
+    - Generate `infrastructure/vault/`:
+      - `vault-policy-{module_id}.hcl`: Module-specific secret access policies
+      - `dynamic-secrets.yaml`: Database credential rotation configuration
+      - `kv-secrets.yaml`: Static secret paths and versions
+    - Generate `infrastructure/network-policies/`:
+      - `default-deny.yaml`: Deny all ingress/egress by default
+      - `{module_id}-allow.yaml`: Explicit allow rules based on `Module/Coupling/DependsOn`
+
 8. **Operational runbook generation**
    - Output: `docs/ops/runbook.md`
    - Sections:
