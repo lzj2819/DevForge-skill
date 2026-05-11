@@ -108,9 +108,25 @@ See `skill/tools/language-adaptation.md`.
 - 标注修复所需工作量
 - 建议修复时间线（Critical 24h 内，High 72h 内，Medium 7d 内）
 
+### Step 5a: 自动修复 Diff 生成
+- 对每个 Critical/High 问题，生成 `git diff` 格式的修复补丁
+- 输出文件：`SECURITY_FIX_{issue_id}.patch`
+- 补丁格式要求：
+  ```diff
+  --- a/src/path/to/file.js
+  +++ b/src/path/to/file.js
+  @@ -10,7 +10,7 @@
+  - const password = 'MyP@ssw0rd123!';
+  + const password = process.env.DB_PASSWORD;
+  ```
+- 生成汇总文件：`SECURITY_FIX.patch`（合并所有修复）
+- 用户可通过 `[APPLY]` 命令直接应用所有补丁
+- 应用后自动触发重新审计
+
 ### Step 6: 报告输出
 - 生成 `SECURITY_AUDIT_REPORT.md`
 - 在代码中插入内联安全注释
+- 输出修复补丁：`SECURITY_FIX.patch`（如存在可修复问题）
 - 归档至项目安全知识库
 
 ---

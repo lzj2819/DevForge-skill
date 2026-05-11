@@ -79,7 +79,7 @@ See `skill/tools/language-adaptation.md`.
      - `Module` nodes with `Interface` (Input/Output), `Coupling` (DependsOn), and `ModuleDetail` (ref to module-level XML)
      - `DataModel` nodes with `Fields` and `CacheStrategy`
      - `StateModel` nodes with `State` (location, owner, consumer, lifecycle)
-     - `Security` nodes with `Authentication` and `Encryption`
+     - `Security` nodes with `Authentication`, `Authorization`, `ThreatModel`, `Encryption`, `KeyManagement`, and `Audit`
    - **Module Level XML templates**: For each `Module` defined in the system XML, auto-generate a template at `PROJECT_SCAFFOLD/docs/architecture/modules/{module_id}/module-architecture.xml` (or `docs/architecture/modules/{module_id}/`). The template must validate against the Module Level schema in `xml-schemas.md` and include:
      - `ParentSystem` reference back to the system XML
      - `Constraints` section pre-populated with the module's system-level interface obligations (Input/Output schemas copied from system `Module/Interface`)
@@ -93,6 +93,17 @@ See `skill/tools/language-adaptation.md`.
          - `lifecycle` (empty, to be filled by module-design)
        - Also copy any system-level `State` entries owned by this module from the system `StateModel`
    - **Reference integrity**: Ensure all `ModuleDetail/@ref` attributes use relative paths that resolve correctly from the system XML location
+
+5a. **Security Architecture Modeling**
+   - Read the generated `architecture.xml` and `PRD.md` security requirements
+   - Extract user roles and permissions from PRD to populate `Authorization` node
+   - Perform algorithm validation:
+     - Scan `Encryption` attributes for weak algorithms (MD5, SHA1, DES, 3DES)
+     - If found, emit WARNING and recommend modern alternatives (SHA-256, AES-256, Argon2)
+   - Generate `security.xml` at `PROJECT_SCAFFOLD/docs/architecture/system/security.xml`
+     - Structure mirrors the `Security` node in `architecture.xml`
+     - Additional section: `ComplianceRequirements` (extracted from PRD)
+   - The `ThreatModel` node in `architecture.xml` may be empty at this stage; it will be populated by `devforge-threat-modeling`
 
 6. **Database Schema (DDL) Generation**
    - Read `architecture.xml` and extract all `DataModel` nodes
@@ -182,6 +193,12 @@ Before recommending any third-party library, framework, or tool, you MUST perfor
    - NEVER recommend the following without explicit user approval:
      - VM2 (critical sandbox escape CVEs, project archived)
      - Any library with known RCE vulnerabilities in the last 12 months
+   - NEVER recommend weak cryptographic algorithms:
+     - MD5 (cryptographically broken)
+     - SHA1 (shattered attack viable)
+     - DES (56-bit key, brute-force feasible)
+     - 3DES (sweet32 attack)
+   - If architecture.xml contains `Encryption atRest="DES"` or similar, flag as CRITICAL and require update before proceeding
    - If a searched tool matches the blacklist or shows deprecation/security issues, you MUST:
      - Flag it explicitly in the recommendation
      - Provide an actively maintained alternative
