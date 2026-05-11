@@ -1,4 +1,4 @@
-# DevForge Decomposition Design v1.3
+# DevForge Decomposition Design v1.4
 
 > **Design Objective**: Decompose the original monolithic skill `DevForge.md` into composable skills that embed VCMF principles and the DIVE cycle. The skill chain models a "single thinker's iterative drafts" rather than a "role relay race": each skill is the same thinker unfolding the same complex problem from a different dimension, always holding the complete intent.
 >
@@ -7,6 +7,8 @@
 > **v1.2 Additions**: Database schema (DDL) generation, OpenAPI 3.0 spec generation, test coverage integration, architecture visualization (Mermaid diagrams), production-ready infrastructure (Terraform/K8s/monitoring), progressive deployment (blue-green + canary), bug diagnosis & refactoring assistant, requirement traceability matrix (RTM), **context-management protocol** (layered summary + repo-index.md), **self-validation checkpoints** (syntax/schema/traceability), **language adaptation** (user-input language detection), and **technology stack validation** (active search before tool recommendation).
 >
 > **v1.3 Additions**: **Triple Verification Mechanism** (3a architecture-validation + 3b design-review + 3c security-audit), **`devforge-test-execution` skill** (unit/integration/e2e test execution + coverage reporting + RTM sync), **FIX sub-flow** with diff generation and auto re-validation in design-review, **verification phase continuity** (both validation and design-review run by default), **module-design strictly after scaffolding** (precondition enforcement), **native agent-based parallel batch mode** for module design (`[MODULE_BATCH]`), **cross-module interface compatibility check** in module-design self-validation, **iteration post-implementation validation loop** (breaking changes trigger re-validation), **P0/P1/P2 placeholder generation strategy** in scaffolding and module-design, **`docs/architecture/INDEX.md`** generation, **RTM real-time updates** across all skills, and **web research integration** in requirement-analysis.
+>
+> **v1.4 Additions**: **`devforge-threat-modeling` skill** (STRIDE methodology, risk rating, mitigation generation, security test cases), **`devforge-data-pipeline` skill** (dataflow.xml, ETL DAG generation, OLAP schema, data quality rules), **security architecture modeling** in architecture-design (weak algorithm validation, security.xml generation), **microservice code generation** in module-design (gRPC proto, Saga config, Resilience patterns), **microservice infrastructure** in ops-ready (Istio Service Mesh, OpenTelemetry, Vault, Network Policies), **security-audit auto-fix diff generation** (`SECURITY_FIX.patch`), **three new P1 domain extensions** (frontend-ui-system-design, observability-engineering, performance-testing), **characteristic tag-driven extension loading**, and **enhanced STATE.md** (Characteristic Tags, Loaded Extensions, Security Posture, Data Pipeline Status sections).
 
 ---
 
@@ -65,6 +67,17 @@ User inputs a raw idea
     | [APPROVE]            | [APPROVE / FIX]          | [APPROVE / SKIP]
     +----------------------+--------------------------+
                               v
+                         (Optional)
+                              v
+                  +----------------------+
+                  | 3d. devforge-        |
+                  | threat-modeling      |
+                  | DIVE: Verify         |
+                  | STRIDE analysis      |
+                  | (threat matrix)      |
+                  +----------------------+
+                      | [APPROVE / SKIP]
+                              v
 +-----------------------------------------------------------+
 |  4. devforge-project-scaffolding                              |
 |  DIVE: Implement (infrastructure)                         |
@@ -105,12 +118,23 @@ User inputs a raw idea
 +-----------------------------------------------------------+
     | [APPROVE]
     v
+(Optional stages)
+    v
++-----------------------------------------------------------+
+|  7a. devforge-data-pipeline                                   |
+|  DIVE: Design (data infrastructure)                       |
+|  Trigger: [DATA_PIPELINE]                                 |
+|  Outputs: dataflow.xml + schema-olap.sql                  |
+|           + ETL DAG + data-quality-rules.yaml             |
++-----------------------------------------------------------+
+    | [APPROVE]
+    v
 (Optional stages 8-10: visualization, ops-ready, debug-assistant)
 ```
 
 **Core Design Principles**:
 1. **Composable**: Each skill has an independent trigger and can be invoked alone or in a chain.
-2. **File-based State**: Global state is persisted via `STATE.md`, not LLM context. STATE.md is a reasoning chain anchor (12 sections: Immutable Goal, Completed Steps, DecisionDigest, Current State, Quality Gates, Module Registry, Iteration History, Compressed Context, Artifact Index, Known Pitfalls, Error Log, Intervention Log).
+2. **File-based State**: Global state is persisted via `STATE.md`, not LLM context. STATE.md is a reasoning chain anchor (16 sections: Immutable Goal, Completed Steps, DecisionDigest, Current State, Quality Gates, Module Registry, Iteration History, Compressed Context, Artifact Index, Characteristic Tags, Loaded Extensions, Security Posture, Data Pipeline Status, Known Pitfalls, Error Log, Intervention Log).
 3. **Human-in-the-loop**: Every skill halts at `[APPROVE]`. Auto-jumping is forbidden.
 4. **Subagent Ready**: Complex subtasks are executed via internal subagent dispatch, but the skill itself remains self-contained.
 5. **Single Thinker Model**: All skills = same thinker unfolding the same problem from different dimensions, not workers passing documents. Each skill reads ALL historical artifacts, not just the previous phase's output.
@@ -578,6 +602,10 @@ DevForge/
 │   └── SKILL.md
 ├── devforge-debug-assistant/        # Stage 10: Debug & Refactor Assistant
 │   └── SKILL.md
+├── devforge-threat-modeling/        # Stage 3d: Threat Modeling (STRIDE)
+│   └── SKILL.md
+├── devforge-data-pipeline/          # Stage 7a: Data Pipeline Design
+│   └── SKILL.md
 │
 └── extensions/                      # Domain-specific overlays (dynamic loading)
     ├── ai-agent-design/
@@ -585,16 +613,30 @@ DevForge/
     │   └── references/
     │       ├── dimensions.md
     │       └── anti-patterns.md
-    ├── data-pipeline-design/
+    ├── data-pipeline-design/        # Reference-only extension (v1.4)
     │   ├── SKILL.md
     │   └── references/
     │       ├── schema-evolution.md
     │       └── idempotency-patterns.md
-    └── mobile-app-design/
+    ├── mobile-app-design/
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── offline-first.md
+    │       └── push-notification.md
+    ├── frontend-ui-system-design/   # P1 Extension (v1.4)
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── component-hierarchy.md
+    │       ├── performance-metrics.md
+    │       └── storybook-integration.md
+    ├── observability-engineering/   # P1 Extension (v1.4)
+    │   ├── SKILL.md
+    │   └── references/
+    │       └── observability-architecture.md
+    └── performance-testing/         # P1 Extension (v1.4)
         ├── SKILL.md
         └── references/
-            ├── offline-first.md
-            └── push-notification.md
+            └── performance-testing-guide.md
 ```
 
 ---
@@ -614,6 +656,8 @@ DevForge/
 | `devforge-visualization` | Diagrams reflect approved XML | Shows all cross-module interfaces | Data flow matches `<Coupling>` definitions | Shows state ownership (writes vs reads) | All elements verifiable by node ID |
 | `devforge-ops-ready` | Resources map 1:1 to `Module` nodes | K8s ports match `Interface` definitions | Monitoring metrics are collectable | Persistence policies match `StateModel` | Every resource traceable to `Module`/`StateModel` |
 | `devforge-debug-assistant` | Fixes respect `INTERFACE_CONTRACT.md` | Refactoring preserves public interfaces | Diagnosis based on actual test output/logs | State fixes respect `StateModel` ownership | Fixes update `component-spec.xml` if XML is source |
+| `devforge-threat-modeling` | Every threat maps to Module/Interface in architecture.xml | Covers all cross-module trust boundaries | Mitigations implementable with available tech | Threats involving state reference StateModel ownership | ThreatModel updates architecture.xml Security node |
+| `devforge-data-pipeline` | DataModel traces back to PRD requirements | ETL interfaces have explicit schemas and error codes | Generated DAGs executable; schemas validate against OLAP engines | Data lineage tracks ownership source→consumption | `dataflow.xml` is authoritative for all pipeline artifacts |
 
 ## 6.1 Triple Verification Mechanism (v1.3)
 
@@ -642,8 +686,10 @@ DevForge/
 | **Verify** | `devforge-architecture-validation` + `devforge-design-review` + `devforge-test-execution` | Technical consistency check + adversarial inspection + security scan + test execution + coverage |
 | **Evolve** | `devforge-iteration-planning` | Impact analysis, incremental PRD, interface versioning, XML sync; loops back to 3a/3b if breaking changes |
 | **Visualize** | `devforge-visualization` | Mermaid diagrams from `architecture.xml` |
-| **Operate** | `devforge-ops-ready` | Terraform, K8s, monitoring, progressive deployment |
+| **Operate** | `devforge-ops-ready` | Terraform, K8s, monitoring, progressive deployment, Service Mesh, OpenTelemetry, Vault |
 | **Debug** | `devforge-debug-assistant` | Bug diagnosis + refactoring + production incident analysis; accepts `test_execution_completed` as entry point |
+| **Threat Model** | `devforge-threat-modeling` | STRIDE analysis, risk rating, mitigation generation, security test cases |
+| **Data Pipeline** | `devforge-data-pipeline` | Dataflow topology, OLAP schema, ETL DAG, data quality rules |
 
 ---
 
@@ -787,6 +833,82 @@ description: Internal utility skill used by other DevForges to compress session 
 
 ---
 
+### 3.12 `devforge-threat-modeling` (v1.4 New)
+
+```yaml
+---
+name: devforge-threat-modeling
+description: Use when a system architecture has been designed and the user needs structured threat modeling using STRIDE methodology. Trigger when user says [THREAT_MODEL] or after design-review for high-security projects.
+---
+```
+
+**Scope**: Structured threat modeling using STRIDE methodology on an approved architecture.
+
+**Input**: `architecture.xml`, `PRD.md`, `INTERFACE_CONTRACT.md`, `security.xml`.
+
+**Output**:
+- `PROJECT_SCAFFOLD/docs/architecture/validation/THREAT_MODEL_REPORT.md`
+- Updated `architecture.xml` — populated `Security/ThreatModel` node
+- Updated `security.xml` — added `Mitigations` section
+
+**VCMF Checkpoints**:
+- Design as Contract: Every threat must map to a specific Module/Interface in architecture.xml
+- Interface as Boundary: Threat model must cover all cross-module trust boundaries
+- Reality as Baseline: Mitigations must be implementable with available technology
+- State as Responsibility: Threats involving state must reference StateModel ownership
+- XML as Authority: ThreatModel output must update architecture.xml's Security/ThreatModel node
+
+**Key Workflow**:
+1. Load architecture context (architecture.xml, PRD.md, INTERFACE_CONTRACT.md, security.xml)
+2. Extract all Module IDs, Interface definitions, and trust boundaries
+3. STRIDE analysis per module (Spoofing, Tampering, Repudiation, Information Disclosure, DoS, Elevation)
+4. Risk rating using Likelihood × Impact matrix (Critical/High/Medium/Low)
+5. Mitigation generation for Critical/High threats (technical, process, compensating controls)
+6. Security test case generation (convert mitigations into testable requirements)
+7. Output generation: THREAT_MODEL_REPORT.md, update architecture.xml, update security.xml
+8. Self-validation: verify every threat cites a Module ID, every mitigation is implementable, STRIDE coverage complete
+9. Gate: "威胁建模已完成。识别威胁 X 个（Critical Y 个，High Z 个）。回复 [APPROVE] 标记威胁建模完成，回复 [FIX {threat_id}] 要求修复特定威胁，回复 [PAUSE] 暂停，回复 [SKIP] 跳过（仅低安全需求项目）。"
+
+---
+
+### 3.13 `devforge-data-pipeline` (v1.4 New)
+
+```yaml
+---
+name: devforge-data-pipeline
+description: Use when a project requires data pipeline architecture, ETL DAG generation, dimensional modeling, or data quality framework. Trigger when user says [DATA_PIPELINE] or PRD contains data-pipeline tags.
+---
+```
+
+**Scope**: Design and generate complete data pipeline infrastructure from an approved architecture.
+
+**Input**: Approved `architecture.xml`, `PRD.md`.
+
+**Output**:
+- `PROJECT_SCAFFOLD/docs/architecture/system/dataflow.xml`
+- `PROJECT_SCAFFOLD/docs/architecture/system/schema-olap.sql`
+- `PROJECT_SCAFFOLD/dags/{pipeline_id}.py` (Airflow DAGs)
+- `PROJECT_SCAFFOLD/data-quality-rules.yaml`
+
+**VCMF Checkpoints**:
+- Design as Contract: Every DataModel must trace back to PRD requirements; pipeline outputs must match PRD data consumers
+- Interface as Boundary: ETL interfaces (ingest/transform/sink) must have explicit schemas and error codes
+- Reality as Baseline: Generated DAGs must be executable; schemas must validate against target OLAP engines
+- State as Responsibility: Data lineage must track ownership from source to consumption
+- XML as Authority: `dataflow.xml` is the authoritative source for all pipeline artifacts
+
+**Key Workflow**:
+1. Read PRD.md and architecture.xml; identify data sources, transformations, storage, consumption points
+2. Generate `dataflow.xml` with Source, Ingestion, Transform, Storage, Consumption nodes
+3. Dimensional modeling schema generation (fact tables, dimension tables, aggregate tables) in schema-olap.sql
+4. ETL DAG generation (Airflow or Prefect) with task dependencies, retry policy, idempotency checks
+5. Data quality rules generation (row count delta, null rate, freshness, PII scan)
+6. Self-validation: verify no orphaned nodes, SQL syntax validity, no circular dependencies, column references exist
+7. Update STATE.md: phase → `data_pipeline_completed`
+8. Gate: "数据管道设计已完成。生成数据流 X 个，事实表 Y 个，维度表 Z 个，ETL DAG W 个。回复 [APPROVE] 标记数据管道阶段完成，回复 [PAUSE] 暂停，回复 [EDIT {file_path}] 手动编辑后让 AI 继续。"
+
+---
+
 ## 8. Implementation Path (v1.2 Completed)
 
 ### Completed in v1.2
@@ -827,6 +949,24 @@ description: Internal utility skill used by other DevForges to compress session 
 - [x] **12-section STATE.md** — added DecisionDigest, Quality Gates, Error Log, Intervention Log
 - [x] **Production incident diagnosis** (Mode C) — debug-assistant supports production log/metric/trace analysis
 
+### Completed in v1.4
+
+- [x] **`devforge-threat-modeling` skill** — STRIDE methodology threat modeling with risk rating matrix, mitigation generation, and security test case generation
+- [x] **`devforge-data-pipeline` skill** — dataflow.xml topology modeling, OLAP dimensional schema generation (star-schema), ETL DAG creation (Airflow/Prefect), data quality rule definition
+- [x] **Security architecture modeling** in `devforge-architecture-design` — Step 5a with weak algorithm validation (MD5/SHA1/DES/3DES blacklist), security.xml generation, Authorization/ThreatModel/KeyManagement/Audit nodes
+- [x] **Microservice code generation** in `devforge-module-design` — gRPC proto generation, Saga orchestration config, Resilience patterns (CircuitBreaker, RateLimiter, Retry)
+- [x] **Microservice infrastructure** in `devforge-ops-ready` — Istio Service Mesh (VirtualService, DestinationRule, Gateway), OpenTelemetry (Collector, Jaeger), Vault (policies, dynamic secrets), Network Policies
+- [x] **Security-audit auto-fix diff generation** — `SECURITY_FIX.patch` with git diff format, `[APPLY]` command for automatic application and re-audit
+- [x] **Three new P1 domain extensions**:
+  - `extensions/frontend-ui-system-design/` — component tiering, design system, performance budgets (LCP/FID/CLS)
+  - `extensions/observability-engineering/` — SLO/SLI definitions, structured logging, graded alerting, on-call schedules
+  - `extensions/performance-testing/` — k6/Artillery load tests, baseline config, regression detection in CI
+- [x] **Characteristic tag-driven extension loading** — PRD tags (`ui-heavy`, `high-observability`, `performance-critical`) trigger automatic extension loading
+- [x] **Enhanced STATE.md** — 16 sections with Characteristic Tags, Loaded Extensions, Security Posture, Data Pipeline Status
+- [x] **New human gate commands** — `[THREAT_MODEL]`, `[DATA_PIPELINE]`, `[SLO]`, `[PERFORMANCE_TEST]`, `[FRONTEND_DESIGN]`
+- [x] **New phase transitions** — `threat_modeling_completed`, `data_pipeline_completed`
+- [x] **data-pipeline-design extension downgraded** to reference-only; generation logic migrated to `devforge-data-pipeline` core skill
+
 ### Completed in v1.1
 
 - [x] Dynamic pattern library (`references/architecture-patterns.md`, 10 patterns)
@@ -857,12 +997,12 @@ description: Internal utility skill used by other DevForges to compress session 
 - **Technology Stack Validation**: Active search before recommending tools; never recommend blacklisted libraries (VM2, known RCE) without explicit approval.
 - **Error Tracing**: All errors MUST follow `skill/tools/error-tracing.md` format (TraceID, DecisionID linkage, fix suggestions).
 - **Artifact Management**: All artifacts MUST follow `skill/tools/artifact-manager.md` CRUD-Append rules (read existing → compute diff → update delta → preserve manual edits).
-- **Intervention Checkpoint**: Human gate MUST support `[PAUSE]`, `[ROLLBACK]`, `[EXPLAIN]`, `[EDIT]`, `[SKIP]`, `[INJECT]`, `[FIX]`, `[APPLY]`, `[FORCE_APPROVE]`, `[SKIP_REVIEW]`, `[DESIGN_REVIEW]`, `[VALIDATE]`, `[TEST]`, `[MODULE_BATCH]` per `skill/tools/intervention-checkpoint.md`.
+- **Intervention Checkpoint**: Human gate MUST support `[PAUSE]`, `[ROLLBACK]`, `[EXPLAIN]`, `[EDIT]`, `[SKIP]`, `[INJECT]`, `[FIX]`, `[APPLY]`, `[FORCE_APPROVE]`, `[SKIP_REVIEW]`, `[DESIGN_REVIEW]`, `[VALIDATE]`, `[TEST]`, `[MODULE_BATCH]`, `[THREAT_MODEL]`, `[DATA_PIPELINE]` per `skill/tools/intervention-checkpoint.md`.
 - **Security Audit**: Code generation MUST trigger `devforge-security-audit` scan; Critical issues MUST be fixed before proceeding.
 - **Search Integration**: Tool recommendations MUST follow `references/search-integration.md` (WebSearch for CVE, deprecation, benchmarks; cache 24h).
 - **Test Coverage**: All projects must maintain ≥80% unit test coverage; CI must fail if below threshold.
 
 ---
 
-*Design Document Version: v1.3*
-*Date: 2026-05-08*
+*Design Document Version: v1.4*
+*Date: 2026-05-11*

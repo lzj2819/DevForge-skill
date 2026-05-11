@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **DevForge SDLC Skill Chain v1.3**, a Claude Code skill chain that models a complete AI-driven software development lifecycle. It is not a traditional software project — the "code" consists of markdown-based skill definitions (`.md` files with YAML frontmatter) that Claude Code loads and interprets.
+This is **DevForge SDLC Skill Chain v1.4**, a Claude Code skill chain that models a complete AI-driven software development lifecycle. It is not a traditional software project — the "code" consists of markdown-based skill definitions (`.md` files with YAML frontmatter) that Claude Code loads and interprets.
 
-The chain covers 10 core stages from product ideation to production deployment, built on two methodologies:
+The chain covers 12 core stages from product ideation to production deployment, built on two methodologies:
 - **VCMF** (Vibe Coding Maturity Framework) — 5 core principles: Design as Contract, Interface as Boundary, Reality as Baseline, State as Responsibility, XML as Authority
 - **DIVE** (Design-Implement-Verify-Evolve) — the cyclic workflow mapped across the stages
 
@@ -52,7 +52,7 @@ When adding or renaming a skill directory, update all four installer scripts:
 
 ## Skill Chain Architecture
 
-### Stage Flow (v1.3)
+### Stage Flow (v1.4)
 
 The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thinker" unfolding a complex problem from a different dimension, not a role relay race.
 
@@ -69,6 +69,10 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
     ↓ [APPROVE]         ↓ [APPROVE/FIX]     ↓ [APPROVE/SKIP]
     └──────────────────┴──────────────────┴──────────────────┘
                       ↓ [APPROVE]
+                  (Optional)
+                      ↓
+              3d. threat-modeling (STRIDE)
+                      ↓ [APPROVE / SKIP]
 4. project-scaffolding (Implement)
     ↓ [APPROVE]
 5. module-design (Design, module-level)  ← Strictly after scaffolding
@@ -76,6 +80,11 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 6. test-execution (Verify)  ← [TEST]
     ↓ [APPROVE / DEBUG]
 7. iteration-planning (Evolve)  ← Loops back to 3a/3b if breaking
+    ↓ [APPROVE]
+                  (Optional)
+                      ↓
+              7a. data-pipeline (data infrastructure)
+                      ↓ [APPROVE / SKIP]
 ```
 
 | Stage | Skill Directory | Trigger | DIVE Phase |
@@ -92,13 +101,16 @@ The chain uses **Workflow-Aggregate Decomposition**: each skill is the same "thi
 | 8 | `devforge-visualization/` | `[VISUALIZE]` | — |
 | 9 | `devforge-ops-ready/` | `[OPS]` | — |
 | 10 | `devforge-debug-assistant/` | `[DEBUG]` or test failure | — |
+| 11 | `devforge-threat-modeling/` | `[THREAT_MODEL]` | Verify |
+| 12 | `devforge-data-pipeline/` | `[DATA_PIPELINE]` | Design (data infrastructure) |
 
-Plus: `skill/tools/context-compression.md` (utility tool — invoked by other skills), `devforge-security-audit/` (security scan), `extensions/` (domain-specific overlays: ai-agent-design, data-pipeline-design, mobile-app-design).
+Plus: `skill/tools/context-compression.md` (utility tool — invoked by other skills), `devforge-security-audit/` (security scan), `extensions/` (domain-specific overlays: ai-agent-design, data-pipeline-design, mobile-app-design, frontend-ui-system-design, observability-engineering, performance-testing).
 
 **Key flow rules:**
-- Stages 3a and 3b both run by default. Stage 3c (security-audit) is optional but recommended. User can `[SKIP_REVIEW]` or `[SKIP_VALIDATION]`.
+- Stages 3a and 3b both run by default. Stage 3c (security-audit) is optional but recommended. Stage 3d (threat-modeling) is optional, triggered by `[THREAT_MODEL]` or auto-loaded for `high-security` projects.
 - Stage 5 (`module-design`) requires `scaffolding_completed` — not `architecture_design_completed`.
 - Stage 7 (`iteration-planning`) loops back to 3a/3b if `verification_gate::required` is true (breaking changes).
+- Stage 7a (`data-pipeline`) is optional, triggered by `[DATA_PIPELINE]` when PRD contains data-pipeline tags.
 
 ### Stage 3: Triple Verification Mechanism
 
@@ -136,7 +148,7 @@ Each skill declares Required vs Optional artifacts. When context exceeds thresho
 
 ### STATE.md as Central State File
 
-`STATE.md` (template in `devforge-state.md`) is the single source of truth for cross-session continuity. It has 11 sections including Immutable Goal (never overwritten), Completed Steps (append-only), Module Registry, Iteration History, Compressed Context, Artifact Index, Error Log, and Intervention Log. The file path varies: `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`.
+`STATE.md` (template in `devforge-state.md`) is the single source of truth for cross-session continuity. It has 16 sections including Immutable Goal (never overwritten), Completed Steps (append-only), Module Registry, Iteration History, Compressed Context, Artifact Index, Characteristic Tags, Loaded Extensions, Security Posture, Data Pipeline Status, Known Pitfalls, Error Log, and Intervention Log. The file path varies: `PROJECT_SCAFFOLD/docs/architecture/system/STATE.md`.
 
 ### Human Gate Commands
 
@@ -155,8 +167,12 @@ Every skill pauses for explicit human approval before proceeding. The supported 
 - `[VALIDATE]` — Re-run architecture-validation after iteration
 - `[TEST]` — Trigger test-execution skill
 
+**v1.4 extended commands**:
+- `[THREAT_MODEL]` — Trigger threat-modeling skill
+- `[DATA_PIPELINE]` — Trigger data-pipeline skill
+
 **Module-level commands:**
-- `[MODULE {id}]`, `[MODULE_BATCH {ids}]`, `[NEXT MODULE]`, `[VISUALIZE]`, `[OPS]`, `[DEBUG]`
+- `[MODULE {id}]`, `[MODULE_BATCH {ids}]`, `[NEXT MODULE]`, `[VISUALIZE]`, `[OPS]`, `[DEBUG]`, `[THREAT_MODEL]`, `[DATA_PIPELINE]`
 
 ## Skill Maintenance Rules
 
@@ -194,6 +210,10 @@ When modifying any skill, check for cross-file dependencies:
 ```
 DevForge/
 ├── devforge-*/           # Skill directories (each contains one SKILL.md)
+│   # Core: requirement-analysis, architecture-design, architecture-validation,
+│   #   design-review, security-audit, project-scaffolding, module-design,
+│   #   test-execution, iteration-planning, visualization, ops-ready,
+│   #   debug-assistant, threat-modeling (v1.4), data-pipeline (v1.4)
 ├── skill/tools/          # Shared tool specifications referenced by skills
 │   ├── precondition-checker.md
 │   ├── language-adaptation.md
@@ -204,7 +224,10 @@ DevForge/
 │   ├── error-tracing.md
 │   └── intervention-checkpoint.md
 ├── references/           # Shared reference documents (schemas, patterns, protocols)
-├── extensions/           # Domain-specific overlay skills (ai-agent-design, etc.)
+├── extensions/           # Domain-specific overlay skills
+│   # ai-agent-design, data-pipeline-design (reference-only v1.4), mobile-app-design,
+│   # frontend-ui-system-design (v1.4), observability-engineering (v1.4),
+│   # performance-testing (v1.4)
 ├── scripts/              # Validation and packaging scripts
 └── .claude-plugin/       # Plugin metadata
 ```
@@ -226,8 +249,8 @@ Every skill directory contains a single `SKILL.md` with:
 | File | Purpose |
 |------|---------|
 | `DevForge.md` | Original monolithic Chinese design document (reference-only, pre-decomposition) |
-| `devforge-design.md` | Skill decomposition design v1.3 — the authoritative architecture of the chain itself |
-| `devforge-state.md` | STATE.md template with 12-section specification (includes Quality Gates) |
+| `devforge-design.md` | Skill decomposition design v1.4 — the authoritative architecture of the chain itself |
+| `devforge-state.md` | STATE.md template with 16-section specification (includes Quality Gates, Characteristic Tags, Loaded Extensions, Security Posture, Data Pipeline Status) |
 | `references/architecture-patterns.md` | 10 architecture patterns with evaluation dimensions and selection matrix |
 | `references/xml-schemas.md` | Three-layer XML schema definitions |
 | `references/context-management-protocol.md` | Token thresholds and artifact loading rules per skill |
@@ -249,11 +272,11 @@ Every skill directory contains a single `SKILL.md` with:
 
 ## Version Bump Checklist
 
-When releasing a new version (e.g., v1.2 → v1.3):
+When releasing a new version (e.g., v1.3 → v1.4):
 
 1. Update `.claude-plugin/plugin.json` → `version`
 2. Update `.claude-plugin/marketplace.json` → `version` and `description`
 3. Update `README.md` → version header and footer
 4. Update `CLAUDE.md` → version references in stage tables
 5. Run `python scripts/package-plugin.py --mode all --output ./dist` (must pass)
-6. Tag the release: `git tag v1.3.0`
+6. Tag the release: `git tag v1.4.0`

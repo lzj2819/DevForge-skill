@@ -1,4 +1,4 @@
-# DevForge SDLC Skill Chain v1.3
+# DevForge SDLC Skill Chain v1.4
 
 > 基于 **VCMF**（Vibe Coding Maturity Framework）与 **DIVE**（Design-Implement-Verify-Evolve）方法论的 AI 驱动软件开发生命周期工具链
 
@@ -8,7 +8,7 @@
 
 ## 一句话介绍
 
-**DevForge** 是一套面向全栈软件工程的 Claude Code Skill 链，将"产品灵感 → 需求文档 → 架构设计 → 代码脚手架 → 生产部署"的完整 SDLC 流程标准化为 10 个可迭代阶段。每个阶段由独立的 Skill 驱动，通过 XML 权威架构、人类门控审核和自动化自校验，确保 AI 生成的每一行代码都可追溯、可验证、可演进。
+**DevForge** 是一套面向全栈软件工程的 Claude Code Skill 链，将"产品灵感 → 需求文档 → 架构设计 → 代码脚手架 → 生产部署"的完整 SDLC 流程标准化为 12 个可迭代阶段。每个阶段由独立的 Skill 驱动，通过 XML 权威架构、人类门控审核和自动化自校验，确保 AI 生成的每一行代码都可追溯、可验证、可演进。
 
 ---
 
@@ -182,7 +182,7 @@ cd $env:USERPROFILE\.claude\devforge-skills; git pull
 
 ---
 
-## 10 个阶段速查表
+## 12 个阶段速查表
 
 | 阶段 | Skill 名称 | 触发条件 | 核心产物 |
 |:---:|:---|:---|:---|
@@ -196,8 +196,10 @@ cd $env:USERPROFILE\.claude\devforge-skills; git pull
 | 6 | `devforge-test-execution` | 输入 `[TEST]` | `TEST_REPORT.md` + `TEST_COVERAGE_GAP.md` + 更新 RTM |
 | 7 | `devforge-iteration-planning` | 初始脚手架完成后有新需求 | `ITERATION_PRD.md` + `ITERATION_PLAN.md` + 增量架构更新 |
 | 8 | `devforge-visualization` | 输入 `[VISUALIZE]` | Mermaid 架构图（系统上下文、模块交互、数据流、ER 图） |
-| 9 | `devforge-ops-ready` | 输入 `[OPS]` | Terraform + K8s manifests + Prometheus/Grafana + 蓝绿/金丝雀发布 + 运维手册 |
+| 9 | `devforge-ops-ready` | 输入 `[OPS]` | Terraform + K8s manifests + Prometheus/Grafana + 蓝绿/金丝雀发布 + 运维手册 + Istio/OTel/Vault（微服务） |
 | 10 | `devforge-debug-assistant` | 输入 `[DEBUG]` 或测试失败 | `DEBUG_REPORT.md`（根因分析 + 修复方案）或 `REFACTOR_REPORT.md`（重构建议） |
+| 11 | `devforge-threat-modeling` | 输入 `[THREAT_MODEL]` | `THREAT_MODEL_REPORT.md`（STRIDE威胁矩阵 + 缓解方案） |
+| 12 | `devforge-data-pipeline` | 输入 `[DATA_PIPELINE]` | `dataflow.xml` + `schema-olap.sql` + ETL DAG + 数据质量规则 |
 
 ### DIVE 循环映射
 
@@ -219,10 +221,14 @@ Verify（验证）
 Evolve（演进）
   └── 阶段 7: 增量迭代 —— 影响分析 + 接口版本控制 + XML 同步 + 实施后重新验证
 
-Visualize / Operate / Debug（可视化/运维/调试）
+Data Pipeline（数据管道）
+  └── 阶段 7a: 数据管道设计 —— 数据流拓扑 + OLAP维度建模 + ETL DAG + 数据质量规则
+
+Visualize / Operate / Debug / Threat Model（可视化/运维/调试/威胁建模）
   ├── 阶段 8: 架构可视化
-  ├── 阶段 9: 生产就绪基础设施
-  └── 阶段 10: 调试与重构助手 + 生产事故诊断
+  ├── 阶段 9: 生产就绪基础设施 + 微服务基础设施（Istio/OTel/Vault）
+  ├── 阶段 10: 调试与重构助手 + 生产事故诊断
+  └── 阶段 11: 威胁建模（STRIDE分析 + 风险评级 + 缓解措施）
 ```
 
 ---
@@ -285,6 +291,10 @@ DevForge/
 │   └── SKILL.md
 ├── devforge-security-audit/         # 安全扫描 Skill
 │   └── SKILL.md
+├── devforge-threat-modeling/        # 阶段 11: 威胁建模 (v1.4)
+│   └── SKILL.md
+├── devforge-data-pipeline/          # 阶段 12: 数据管道设计 (v1.4)
+│   └── SKILL.md
 │
 ├── skill/tools/context-compression.md  # 内部工具: 上下文压缩（由其他技能自动调用）
 │
@@ -294,9 +304,15 @@ DevForge/
     │   └── references/
     │       ├── dimensions.md
     │       └── anti-patterns.md
-    ├── data-pipeline-design/
+    ├── data-pipeline-design/        # 参考级扩展 (v1.4)
     │   └── SKILL.md
-    └── mobile-app-design/
+    ├── mobile-app-design/
+    │   └── SKILL.md
+    ├── frontend-ui-system-design/   # P1扩展: 前端UI系统设计 (v1.4)
+    │   └── SKILL.md
+    ├── observability-engineering/   # P1扩展: 可观测性工程 (v1.4)
+    │   └── SKILL.md
+    └── performance-testing/         # P1扩展: 性能测试 (v1.4)
         └── SKILL.md
 ```
 
@@ -316,6 +332,8 @@ DevForge/
 | `[SKIP]` | 跳过当前可选阶段 | 对可选阶段（如可视化、运维）暂时不需要 |
 | `[INJECT]` | 注入额外上下文或约束 | 临时补充业务规则或技术约束 |
 | `[SECURITY_AUDIT]` | 触发安全专项审查 | 对敏感模块或整体架构进行安全加固检查 |
+| `[THREAT_MODEL]` | 触发威胁建模（STRIDE分析） | 对架构进行系统级威胁评估 |
+| `[DATA_PIPELINE]` | 触发数据管道设计 | 生成ETL DAG和OLAP维度模型 |
 | `[FIX <issue_id>]` | 进入修复模式（design-review阶段） | 对设计审查发现的问题生成修复diff |
 | `[APPLY]` | 应用修复diff | fix子模式下确认应用修改 |
 | `[FORCE_APPROVE]` | 跳过非阻塞性验证警告 | 架构验证发现的所有问题均为warning级别 |
@@ -335,6 +353,11 @@ DevForge/
 | `[VISUALIZE]` | 生成架构可视化图表 |
 | `[OPS]` | 生成生产就绪基础设施配置 |
 | `[DEBUG]` | 启动调试与诊断模式 |
+| `[THREAT_MODEL]` | 启动威胁建模分析 |
+| `[DATA_PIPELINE]` | 启动数据管道设计 |
+| `[SLO]` | 生成SLO/SLI定义（可观测性扩展） |
+| `[PERFORMANCE_TEST]` | 生成性能测试基线配置 |
+| `[FRONTEND_DESIGN]` | 生成前端UI系统设计扩展产物 |
 
 ---
 
@@ -458,8 +481,8 @@ cp .env.example .env
 | 文档 | 路径 | 说明 |
 |:---|:---|:---|
 | 原始单体设计文档 | `DevForge.md` | 完整的中文设计文档，含 10 阶段详细工作流 |
-| Skill 分解设计文档 | `devforge-design.md` | v1.3 分解设计，含 DIVE 映射、VCMF 集成、三重验证机制 |
-| STATE 模板规范 | `devforge-state.md` | `STATE.md` 的 12 大字段定义和示例 |
+| Skill 分解设计文档 | `devforge-design.md` | v1.4 分解设计，含 DIVE 映射、VCMF 集成、三重验证机制、威胁建模、数据管道 |
+| STATE 模板规范 | `devforge-state.md` | `STATE.md` 的 16 大字段定义和示例 |
 | 架构模式库 | `references/architecture-patterns.md` | 10 种架构模式的评估维度 |
 | XML Schema 定义 | `references/xml-schemas.md` | 三层 XML 的 Schema 规范 |
 | 上下文管理协议 | `references/context-management-protocol.md` | 分层摘要 + Token 阈值 + 产物加载规则 |
@@ -478,4 +501,4 @@ python scripts/package-plugin.py --mode all --output ./dist
 
 ---
 
-*Version: v1.3 | Last Updated: 2026-05-08*
+*Version: v1.4 | Last Updated: 2026-05-11*
