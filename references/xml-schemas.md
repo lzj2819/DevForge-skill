@@ -54,6 +54,10 @@ Defines system-wide data entities.
 - `name` (required): Entity name (used as table/collection name in DDL)
 - `ddlType` (optional): DDL target type — one of {table, view, collection}. Default: "table"
 - `tableEngine` (optional): Database engine hint (e.g., "InnoDB", "MyISAM"). Only used when `ddlType="table"`
+- `modelType` (optional): One of {oltp, olap-dimension, olap-fact, olap-aggregate}. Default: "oltp"
+- `partitionKey` (optional): Field name for partitioning (OLAP only)
+- `clusteringKey` (optional): Comma-separated field names for clustering (OLAP only)
+- `retentionDays` (optional): Data retention period in days (OLAP only)
 
 **DataModel children**:
 - `Fields` (1): Contains `Field` nodes
@@ -69,6 +73,9 @@ Defines system-wide data entities.
     - `default` (string, optional): Default value expression (e.g., "CURRENT_TIMESTAMP", "0", "''")
     - `encrypted` (boolean, optional): Whether the field is encrypted at rest
     - `autoIncrement` (boolean, optional): Whether the field auto-increments (typically for primary keys)
+    - `isPartitionKey` (boolean, optional): Whether this field is the partition key
+    - `isClusteringKey` (boolean, optional): Whether this field is part of the clustering key
+    - `isPII` (boolean, optional): Whether this field contains personally identifiable information
   - `Field` children:
     - `Description` (optional): Human-readable field description
 - `Relationships` (optional): Explicit foreign key and entity relationships
