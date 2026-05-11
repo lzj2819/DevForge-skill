@@ -98,7 +98,39 @@ System-wide security policies.
 
 **Security children**:
 - `Authentication`: Attributes: `type`, `issuer`, `audience`
+- `Authorization`: Access control policies.
+
+  **Authorization attributes**:
+  - `model` (required): One of {RBAC, ABAC, PBAC}
+
+  **Authorization children**:
+  - `Role` (0+): Attributes:
+    - `id` (required): Role identifier
+    - `permissions` (required): Comma-separated permission list or "*" for all
+  - `Policy` (0+): Attributes:
+    - `type` (required): One of {resource-based, action-based, context-based}
+    - `target` (optional): Resource pattern this policy applies to
+- `ThreatModel`: Structured threat analysis using STRIDE methodology.
+
+  **ThreatModel children**:
+  - `STRIDE` (1): Contains `Threat` nodes
+    - `Threat` attributes:
+      - `category` (required): One of {Spoofing, Tampering, Repudiation, InformationDisclosure, DoS, Elevation}
+      - `module` (required): Target module id
+      - `mitigation` (required): Mitigation strategy identifier
+      - `severity` (optional): One of {Critical, High, Medium, Low}. Default: "Medium"
 - `Encryption`: Attributes: `inTransit` (e.g., "TLS1.3"), `atRest` (e.g., "AES-256")
+- `KeyManagement`: Encryption key lifecycle management.
+
+  **KeyManagement children**:
+  - `Strategy` (1): Attributes:
+    - `type` (required): One of {HashiCorp-Vault, AWS-KMS, Azure-KeyVault, GCP-KMS}
+    - `rotation` (required): Rotation period in days (e.g., "90d")
+- `Audit`: Security audit logging configuration.
+
+  **Audit children**:
+  - `LogEvents` (1): Comma-separated list of events to log (e.g., "authn,authz,data-access")
+  - `Retention` (1): Retention period in days (e.g., "2555d")
 
 ---
 
